@@ -509,7 +509,7 @@ export function drawFrame(
   const by = 852;
   ctx.save();
   ctx.textAlign = "left";
-  const ns = fitText(ctx, name, SIZE - M * 2 - 200, 96, (n) => `700 ${n}px ${SANS}`, 34);
+  const ns = fitText(ctx, name, pw + 30, 96, (n) => `700 ${n}px ${SANS}`, 34);
   ctx.font = `700 ${ns}px ${SANS}`;
   ctx.fillStyle = p.ink;
   ctx.fillText(name, M, by);
@@ -527,13 +527,16 @@ export function drawFrame(
   ctx.font = `700 20px ${MONO}`;
   ctx.letterSpacing = "2px";
   const chipW = ctx.measureText(role).width + 46;
-  const chipX = M + ctx.measureText(handle).width;
+  ctx.font = `500 27px ${MONO}`;
+  const handleW = ctx.measureText(handle).width;
+  ctx.font = `700 20px ${MONO}`;
+  const chipX = Math.min(M + handleW + 28, px + pw - chipW);
   ctx.fillStyle = p.accent;
-  roundRect(ctx, chipX + 210, by + 18, chipW, 38, 4);
+  roundRect(ctx, chipX, by + 18, chipW, 38, 4);
   ctx.fill();
   ctx.fillStyle = p.chipInk;
   ctx.textAlign = "left";
-  ctx.fillText(role, chipX + 233, by + 44);
+  ctx.fillText(role, chipX + 23, by + 44);
   ctx.restore();
 
   // ---- bottom technical footer
