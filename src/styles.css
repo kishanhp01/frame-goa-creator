@@ -163,9 +163,76 @@
 
 @utility grid-lines {
   background-image:
-    linear-gradient(oklch(0.87 0.21 152 / 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.87 0.21 152 / 0.06) 1px, transparent 1px);
-  background-size: 48px 48px;
+    linear-gradient(oklch(0.87 0.21 152 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.87 0.21 152 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility grid-fine {
+  background-image:
+    linear-gradient(oklch(0.87 0.21 152 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.87 0.21 152 / 0.07) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* Topographic contour field, built from offset radial rings. */
+@utility topo {
+  background-image:
+    repeating-radial-gradient(
+      ellipse 62% 46% at 22% 32%,
+      transparent 0 26px,
+      oklch(0.87 0.21 152 / 0.11) 26px 27px
+    ),
+    repeating-radial-gradient(
+      ellipse 55% 70% at 82% 68%,
+      transparent 0 32px,
+      oklch(0.82 0.16 195 / 0.09) 32px 33px
+    ),
+    repeating-radial-gradient(
+      ellipse 80% 40% at 55% 105%,
+      transparent 0 40px,
+      oklch(0.75 0.2 45 / 0.07) 40px 41px
+    );
+}
+
+@utility scanlines {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      oklch(0.87 0.21 152 / 0.05) 0 1px,
+      transparent 1px 4px
+    );
+    mix-blend-mode: screen;
+  }
+}
+
+@utility bracketed {
+  position: relative;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--primary);
+    opacity: 0.65;
+  }
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+  &::after {
+    right: -1px;
+    bottom: -1px;
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+  }
 }
 
 @utility text-gradient-goa {
@@ -174,3 +241,90 @@
   background-clip: text;
   color: transparent;
 }
+
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px oklch(0.87 0.21 152 / 0.55);
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 1;
+  }
+  44% {
+    opacity: 0.45;
+  }
+  46% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.75;
+  }
+  72% {
+    opacity: 1;
+  }
+}
+
+@keyframes sweep-y {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(900%);
+    opacity: 0;
+  }
+}
+
+@utility animate-marquee {
+  animation: marquee-x 34s linear infinite;
+}
+
+@utility animate-rise {
+  animation: rise-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@utility animate-flicker {
+  animation: flicker 6s steps(1, end) infinite;
+}
+
+@utility animate-sweep {
+  animation: sweep-y 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-rise,
+  .animate-flicker,
+  .animate-sweep {
+    animation: none !important;
+  }
+}
+
