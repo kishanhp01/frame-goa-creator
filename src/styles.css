@@ -139,6 +139,12 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@theme inline {
+  --font-mono: var(--font-mono-ui);
+  --font-sans: var(--font-display);
+  --color-sand: var(--sand);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -147,5 +153,24 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-mono-ui);
+    background-image:
+      radial-gradient(ellipse 60% 45% at 15% 0%, oklch(0.87 0.21 152 / 0.13), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, oklch(0.75 0.2 45 / 0.12), transparent 70%);
+    background-attachment: fixed;
   }
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(oklch(0.87 0.21 152 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.87 0.21 152 / 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@utility text-gradient-goa {
+  background: var(--gradient-goa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
