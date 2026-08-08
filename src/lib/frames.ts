@@ -1,3 +1,5 @@
+import qrcode from "qrcode-generator";
+
 export type FrameId = "terminal" | "sunset" | "palm" | "susegad";
 
 export type FrameTheme = {
@@ -47,6 +49,64 @@ export const SIZE = 1080;
 const MONO = "'JetBrains Mono', ui-monospace, monospace";
 const SANS = "'Space Grotesk', system-ui, sans-serif";
 
+type Palette = {
+  bg: string;
+  panel: string;
+  ink: string;
+  dim: string;
+  accent: string;
+  accent2: string;
+  chipInk: string;
+  grid: string;
+  scan?: number;
+  grain?: number;
+};
+
+const PALETTES: Record<FrameId, Palette> = {
+  terminal: {
+    bg: "#03110b",
+    panel: "#06210f",
+    ink: "#eafff3",
+    dim: "rgba(234,255,243,0.55)",
+    accent: "#4dff9f",
+    accent2: "#1c7a4d",
+    chipInk: "#03110b",
+    grid: "rgba(77,255,159,0.10)",
+    scan: 0.05,
+  },
+  sunset: {
+    bg: "#160518",
+    panel: "#2a0a1d",
+    ink: "#fff6e8",
+    dim: "rgba(255,246,232,0.6)",
+    accent: "#ff7a45",
+    accent2: "#ffc247",
+    chipInk: "#1b0620",
+    grid: "rgba(255,194,71,0.10)",
+  },
+  palm: {
+    bg: "#04191c",
+    panel: "#072a2e",
+    ink: "#f4fbf9",
+    dim: "rgba(244,251,249,0.55)",
+    accent: "#e8c46a",
+    accent2: "#3fb6a8",
+    chipInk: "#04191c",
+    grid: "rgba(232,196,106,0.09)",
+  },
+  susegad: {
+    bg: "#f2ece1",
+    panel: "#e3dbcd",
+    ink: "#151312",
+    dim: "rgba(21,19,18,0.6)",
+    accent: "#e2452c",
+    accent2: "#151312",
+    chipInk: "#f7f3ea",
+    grid: "rgba(21,19,18,0.08)",
+    grain: 2200,
+  },
+};
+
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -88,38 +148,147 @@ function drawCover(
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
 }
 
-function placeholder(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, fg: string) {
-  ctx.save();
-  ctx.globalAlpha = 0.35;
-  ctx.strokeStyle = fg;
-  ctx.lineWidth = 3;
-  ctx.setLineDash([14, 12]);
-  ctx.strokeRect(x + 8, y + 8, w - 16, h - 16);
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 0.7;
-  ctx.fillStyle = fg;
-  ctx.font = `500 30px ${MONO}`;
-  ctx.textAlign = "center";
-  ctx.fillText("[ upload selfie ]", x + w / 2, y + h / 2);
-  ctx.restore();
-}
-
-function scanlines(ctx: CanvasRenderingContext2D, color: string, alpha: number, step = 4) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = color;
-  for (let y = 0; y < SIZE; y += step) ctx.fillRect(0, y, SIZE, 1);
-  ctx.restore();
-}
-
-function fitText(ctx: CanvasRenderingContext2D, text: string, max: number, base: number, font: (s: number) => string) {
+function fitText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  max: number,
+  base: number,
+  font: (s: number) => string,
+  min = 18,
+) {
   let size = base;
   ctx.font = font(size);
-  while (ctx.measureText(text).width > max && size > 18) {
+  while (ctx.measureText(text).width > max && size > min) {
     size -= 2;
     ctx.font = font(size);
   }
   return size;
+}
+
+function hash(s: string) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h);
+}
+
+export function participantCode(identity: Identity) {
+  const seed = hash(
+    `${identity.name}|${identity.handle}|${identity.college}|${identity.city}`,
+  );
+  const alpha = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const a = alpha[seed % 24];
+  const b = alpha[(seed >> 5) % 24];
+  const n = (seed % 9000) + 1000;
+  return `HHG26-${a}${b}-${n}`;
+}
+
+function drawQR(
+  ctx: CanvasRenderingContext2D,
+  data: string,
+  x: number,
+  y: number,
+  size: number,
+  fg: string,
+  bg: string,
+) {
+  const qr = qrcode(0, "M");
+  qr.addData(data || "https://hackerhouse.goa");
+  qr.make();
+  const n = qr.getModuleCount();
+  const cell = size / n;
+  ctx.save();
+  ctx.fillStyle = bg;
+  ctx.fillRect(x - cell, y - cell, size + cell * 2, size + cell * 2);
+  ctx.fillStyle = fg;
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) {
+      if (qr.isDark(r, c)) {
+        ctx.fillRect(
+          Math.floor(x + c * cell),
+          Math.floor(y + r * cell),
+          Math.ceil(cell),
+          Math.ceil(cell),
+        );
+      }
+    }
+  }
+  ctx.restore();
+}
+
+function label(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  color: string,
+  size = 17,
+) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.font = `500 ${size}px ${MONO}`;
+  ctx.textAlign = "left";
+  ctx.letterSpacing = "2px";
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function field(
+  ctx: CanvasRenderingContext2D,
+  key: string,
+  value: string,
+  x: number,
+  y: number,
+  p: Palette,
+  maxW: number,
+) {
+  label(ctx, key, x, y, p.dim, 15);
+  ctx.save();
+  ctx.fillStyle = p.ink;
+  const s = fitText(ctx, value, maxW, 25, (n) => `700 ${n}px ${MONO}`, 14);
+  ctx.font = `700 ${s}px ${MONO}`;
+  ctx.textAlign = "left";
+  ctx.fillText(value, x, y + 30);
+  ctx.restore();
+}
+
+function ticks(ctx: CanvasRenderingContext2D, p: Palette) {
+  ctx.save();
+  ctx.strokeStyle = p.accent;
+  ctx.globalAlpha = 0.45;
+  ctx.lineWidth = 2;
+  for (let x = 60; x < SIZE - 60; x += 20) {
+    const long = x % 100 === 0;
+    ctx.beginPath();
+    ctx.moveTo(x, SIZE - 34);
+    ctx.lineTo(x, SIZE - 34 - (long ? 14 : 7));
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function corners(ctx: CanvasRenderingContext2D, p: Palette) {
+  const m = 34;
+  const l = 46;
+  ctx.save();
+  ctx.strokeStyle = p.accent;
+  ctx.lineWidth = 3;
+  const pts: [number, number, number, number][] = [
+    [m, m, 1, 1],
+    [SIZE - m, m, -1, 1],
+    [m, SIZE - m, 1, -1],
+    [SIZE - m, SIZE - m, -1, -1],
+  ];
+  for (const [x, y, dx, dy] of pts) {
+    ctx.beginPath();
+    ctx.moveTo(x + dx * l, y);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x, y + dy * l);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 export function drawFrame(
@@ -128,242 +297,278 @@ export function drawFrame(
   identity: Identity,
   img: HTMLImageElement | null,
 ) {
+  const p = PALETTES[frame];
   const name = (identity.name || "YOUR NAME").toUpperCase();
-  const handle = identity.handle ? (identity.handle.startsWith("@") ? identity.handle : "@" + identity.handle) : "@handle";
-  const college = identity.college || "College / Org";
-  const city = identity.city || "City";
+  const handle = identity.handle
+    ? identity.handle.startsWith("@")
+      ? identity.handle
+      : "@" + identity.handle
+    : "@handle";
+  const college = (identity.college || "College / Org").toUpperCase();
+  const city = (identity.city || "City").toUpperCase();
   const role = (identity.role || "Builder").toUpperCase();
+  const code = participantCode(identity);
 
   ctx.clearRect(0, 0, SIZE, SIZE);
 
-  if (frame === "terminal") {
-    ctx.fillStyle = "#03110b";
-    ctx.fillRect(0, 0, SIZE, SIZE);
-    ctx.strokeStyle = "rgba(77,255,159,0.10)";
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= SIZE; i += 45) {
-      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, SIZE); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(SIZE, i); ctx.stroke();
-    }
-    const px = 90, py = 150, pw = SIZE - 180, ph = 560;
-    ctx.save();
-    roundRect(ctx, px, py, pw, ph, 8);
-    ctx.clip();
-    if (img) drawCover(ctx, img, px, py, pw, ph);
-    else { ctx.fillStyle = "#06210f"; ctx.fillRect(px, py, pw, ph); }
-    const g = ctx.createLinearGradient(0, py + ph * 0.4, 0, py + ph);
-    g.addColorStop(0, "rgba(3,17,11,0)");
-    g.addColorStop(1, "rgba(3,17,11,0.92)");
-    ctx.fillStyle = g;
-    ctx.fillRect(px, py, pw, ph);
-    ctx.restore();
-    if (!img) placeholder(ctx, px, py, pw, ph, "#4dff9f");
-    ctx.strokeStyle = "#4dff9f";
-    ctx.lineWidth = 3;
-    roundRect(ctx, px, py, pw, ph, 8);
-    ctx.stroke();
-
-    ctx.fillStyle = "#4dff9f";
-    ctx.textAlign = "left";
-    ctx.font = `700 34px ${MONO}`;
-    ctx.fillText("FRAME//GOA", 90, 92);
-    ctx.font = `500 24px ${MONO}`;
-    ctx.fillStyle = "rgba(77,255,159,0.6)";
-    ctx.textAlign = "right";
-    ctx.fillText("HH GOA 2026", SIZE - 90, 92);
-
-    ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(77,255,159,0.65)";
-    ctx.font = `500 24px ${MONO}`;
-    ctx.fillText("> whoami", 90, 780);
-    const s = fitText(ctx, name, SIZE - 180, 80, (n) => `700 ${n}px ${MONO}`);
-    ctx.fillStyle = "#eafff3";
-    ctx.font = `700 ${s}px ${MONO}`;
-    ctx.fillText(name, 90, 858);
-    ctx.fillStyle = "#4dff9f";
-    ctx.font = `500 28px ${MONO}`;
-    ctx.fillText(handle, 90, 902);
-    ctx.fillStyle = "rgba(234,255,243,0.7)";
-    ctx.font = `400 24px ${MONO}`;
-    ctx.fillText(`${college} · ${city}`, 90, 946);
-
-    ctx.fillStyle = "#4dff9f";
-    roundRect(ctx, 90, 972, ctx.measureText(role).width + 60, 52, 6);
-    ctx.fill();
-    ctx.fillStyle = "#03110b";
-    ctx.font = `700 24px ${MONO}`;
-    ctx.fillText(role, 120, 1006);
-    scanlines(ctx, "#4dff9f", 0.05);
-    return;
-  }
+  // ---- background
+  ctx.fillStyle = p.bg;
+  ctx.fillRect(0, 0, SIZE, SIZE);
 
   if (frame === "sunset") {
-    const bg = ctx.createLinearGradient(0, 0, 0, SIZE);
-    bg.addColorStop(0, "#1b0620");
-    bg.addColorStop(0.55, "#5b1233");
-    bg.addColorStop(1, "#ff5c39");
-    ctx.fillStyle = bg;
+    const g = ctx.createRadialGradient(760, 240, 40, 760, 240, 820);
+    g.addColorStop(0, "rgba(255,122,69,0.55)");
+    g.addColorStop(0.5, "rgba(91,18,51,0.55)");
+    g.addColorStop(1, "rgba(22,5,24,0)");
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, SIZE, SIZE);
-    ctx.save();
-    ctx.globalAlpha = 0.85;
-    const sun = ctx.createLinearGradient(0, 300, 0, 620);
-    sun.addColorStop(0, "#ffc247");
-    sun.addColorStop(1, "#ff5c39");
-    ctx.fillStyle = sun;
-    ctx.beginPath();
-    ctx.arc(SIZE / 2, 470, 300, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    ctx.save();
-    ctx.globalCompositeOperation = "destination-out";
-    for (let i = 0; i < 10; i++) ctx.fillRect(0, 470 + i * 26, SIZE, 8 + i * 1.6);
-    ctx.restore();
-
-    const cx = SIZE / 2, cy = 470, rad = 230;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-    ctx.clip();
-    if (img) drawCover(ctx, img, cx - rad, cy - rad, rad * 2, rad * 2);
-    else { ctx.fillStyle = "#2a0a1d"; ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2); }
-    ctx.restore();
-    if (!img) placeholder(ctx, cx - rad, cy - rad, rad * 2, rad * 2, "#ffe8c9");
-    ctx.strokeStyle = "#ffe0a8";
-    ctx.lineWidth = 8;
-    ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke();
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#ffe8c9";
-    ctx.font = `700 30px ${MONO}`;
-    ctx.fillText("FRAME//GOA  ·  HH GOA 2026", SIZE / 2, 92);
-    const s = fitText(ctx, name, SIZE - 160, 92, (n) => `700 ${n}px ${SANS}`);
-    ctx.font = `700 ${s}px ${SANS}`;
-    ctx.fillStyle = "#fff6e8";
-    ctx.fillText(name, SIZE / 2, 830);
-    ctx.font = `500 30px ${MONO}`;
-    ctx.fillStyle = "#ffd9a0";
-    ctx.fillText(handle, SIZE / 2, 880);
-    ctx.font = `400 26px ${MONO}`;
-    ctx.fillStyle = "rgba(255,246,232,0.85)";
-    ctx.fillText(`${college} · ${city}`, SIZE / 2, 926);
-    ctx.font = `700 26px ${MONO}`;
-    const w = ctx.measureText(role).width + 64;
-    ctx.strokeStyle = "#fff6e8";
-    ctx.lineWidth = 3;
-    roundRect(ctx, SIZE / 2 - w / 2, 958, w, 58, 29);
-    ctx.stroke();
-    ctx.fillStyle = "#fff6e8";
-    ctx.fillText(role, SIZE / 2, 996);
-    return;
+  }
+  if (frame === "palm") {
+    const g = ctx.createRadialGradient(300, 300, 60, 300, 300, 780);
+    g.addColorStop(0, "rgba(63,182,168,0.22)");
+    g.addColorStop(1, "rgba(4,25,28,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, SIZE, SIZE);
   }
 
-  if (frame === "palm") {
-    ctx.fillStyle = "#04191c";
-    ctx.fillRect(0, 0, SIZE, SIZE);
-    const glow = ctx.createRadialGradient(SIZE / 2, 420, 60, SIZE / 2, 420, 620);
-    glow.addColorStop(0, "rgba(10,59,64,0.9)");
-    glow.addColorStop(1, "rgba(4,25,28,0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, SIZE, SIZE);
+  // grid
+  ctx.save();
+  ctx.strokeStyle = p.grid;
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= SIZE; i += 45) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, SIZE); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(SIZE, i); ctx.stroke();
+  }
+  ctx.restore();
 
-    ctx.strokeStyle = "#e8c46a";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(46, 46, SIZE - 92, SIZE - 92);
-    ctx.strokeRect(60, 60, SIZE - 120, SIZE - 120);
-
-    const px = 140, py = 150, pw = SIZE - 280, ph = 620;
+  if (p.grain) {
     ctx.save();
-    roundRect(ctx, px, py, pw, ph, 200);
-    ctx.clip();
-    if (img) drawCover(ctx, img, px, py, pw, ph);
-    else { ctx.fillStyle = "#072a2e"; ctx.fillRect(px, py, pw, ph); }
-    const g = ctx.createLinearGradient(0, py + ph * 0.5, 0, py + ph);
-    g.addColorStop(0, "rgba(4,25,28,0)");
-    g.addColorStop(1, "rgba(4,25,28,0.9)");
+    ctx.fillStyle = "rgba(21,19,18,0.05)";
+    for (let i = 0; i < p.grain; i++) {
+      ctx.fillRect(Math.random() * SIZE, Math.random() * SIZE, 2, 2);
+    }
+    ctx.restore();
+  }
+
+  // ---- top brand bar
+  const M = 60;
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.fillStyle = p.ink;
+  ctx.font = `700 30px ${SANS}`;
+  ctx.letterSpacing = "1px";
+  ctx.fillText("HACKER HOUSE", M, 82);
+  const hw = ctx.measureText("HACKER HOUSE ").width;
+  ctx.fillStyle = p.accent;
+  ctx.fillText("GOA", M + hw, 82);
+  ctx.restore();
+
+  label(ctx, "IDENTITY SYSTEM / V2.6", M, 112, p.dim, 15);
+
+  ctx.save();
+  ctx.textAlign = "right";
+  ctx.fillStyle = p.accent;
+  ctx.font = `700 20px ${MONO}`;
+  ctx.letterSpacing = "3px";
+  ctx.fillText("EDITION 2026", SIZE - M, 74);
+  ctx.fillStyle = p.dim;
+  ctx.font = `500 15px ${MONO}`;
+  ctx.fillText("15\u00B035'N 73\u00B045'E \u00B7 ANJUNA", SIZE - M, 104);
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = p.accent;
+  ctx.globalAlpha = 0.5;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(M, 134);
+  ctx.lineTo(SIZE - M, 134);
+  ctx.stroke();
+  ctx.restore();
+
+  // ---- asymmetrical selfie panel (focal point)
+  const px = M;
+  const py = 168;
+  const pw = 610;
+  const ph = 620;
+
+  ctx.save();
+  ctx.shadowColor = frame === "susegad" ? "rgba(21,19,18,0.25)" : "rgba(0,0,0,0.55)";
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 18;
+  roundRect(ctx, px, py, pw, ph, 4);
+  ctx.fillStyle = p.panel;
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  roundRect(ctx, px, py, pw, ph, 4);
+  ctx.clip();
+  if (img) {
+    drawCover(ctx, img, px, py, pw, ph);
+    const g = ctx.createLinearGradient(0, py + ph * 0.55, 0, py + ph);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(1, frame === "susegad" ? "rgba(21,19,18,0.45)" : "rgba(0,0,0,0.65)");
     ctx.fillStyle = g;
     ctx.fillRect(px, py, pw, ph);
-    ctx.restore();
-    if (!img) placeholder(ctx, px, py, pw, ph, "#e8c46a");
-    ctx.strokeStyle = "#e8c46a";
-    ctx.lineWidth = 3;
-    roundRect(ctx, px, py, pw, ph, 200);
-    ctx.stroke();
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#e8c46a";
+  } else {
+    ctx.strokeStyle = p.accent;
+    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([12, 10]);
+    ctx.strokeRect(px + 18, py + 18, pw - 36, ph - 36);
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = p.accent;
     ctx.font = `500 26px ${MONO}`;
-    ctx.fillText("F R A M E / / G O A", SIZE / 2, 112);
-    const s = fitText(ctx, name, SIZE - 220, 84, (n) => `700 ${n}px ${SANS}`);
-    ctx.font = `700 ${s}px ${SANS}`;
-    ctx.fillStyle = "#f4fbf9";
-    ctx.fillText(name, SIZE / 2, 858);
-    ctx.font = `500 28px ${MONO}`;
-    ctx.fillStyle = "#e8c46a";
-    ctx.fillText(`${handle}  ·  ${role}`, SIZE / 2, 906);
-    ctx.font = `400 25px ${MONO}`;
-    ctx.fillStyle = "rgba(244,251,249,0.72)";
-    ctx.fillText(`${college} · ${city}`, SIZE / 2, 950);
-    ctx.fillStyle = "rgba(232,196,106,0.75)";
-    ctx.font = `500 22px ${MONO}`;
-    ctx.fillText("HH GOA 2026 — IDENTITY PASS", SIZE / 2, 1002);
-    return;
+    ctx.textAlign = "center";
+    ctx.fillText("[ UPLOAD SELFIE ]", px + pw / 2, py + ph / 2);
+    ctx.font = `400 16px ${MONO}`;
+    ctx.fillStyle = p.dim;
+    ctx.fillText("SUBJECT CAPTURE PENDING", px + pw / 2, py + ph / 2 + 34);
   }
-
-  // susegad
-  ctx.fillStyle = "#f2ece1";
-  ctx.fillRect(0, 0, SIZE, SIZE);
-  ctx.fillStyle = "rgba(21,19,18,0.05)";
-  for (let i = 0; i < 2600; i++) {
-    ctx.fillRect(Math.random() * SIZE, Math.random() * SIZE, 2, 2);
+  // reticle marks over the portrait
+  ctx.globalAlpha = 0.9;
+  ctx.strokeStyle = p.accent;
+  ctx.lineWidth = 2;
+  const rl = 22;
+  const cpts: [number, number, number, number][] = [
+    [px + 16, py + 16, 1, 1],
+    [px + pw - 16, py + 16, -1, 1],
+    [px + 16, py + ph - 16, 1, -1],
+    [px + pw - 16, py + ph - 16, -1, -1],
+  ];
+  for (const [x, y, dx, dy] of cpts) {
+    ctx.beginPath();
+    ctx.moveTo(x + dx * rl, y);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x, y + dy * rl);
+    ctx.stroke();
   }
-  ctx.fillStyle = "#e2452c";
-  ctx.fillRect(0, 0, SIZE, 22);
-  ctx.fillRect(0, SIZE - 22, SIZE, 22);
-
-  const px = 80, py = 170, pw = SIZE - 160, ph = 580;
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(px, py, pw, ph);
-  ctx.clip();
-  if (img) drawCover(ctx, img, px, py, pw, ph);
-  else { ctx.fillStyle = "#e3dbcd"; ctx.fillRect(px, py, pw, ph); }
   ctx.restore();
-  if (!img) placeholder(ctx, px, py, pw, ph, "#151312");
-  ctx.strokeStyle = "#151312";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(px, py, pw, ph);
 
+  ctx.save();
+  ctx.strokeStyle = p.accent;
+  ctx.lineWidth = 3;
+  roundRect(ctx, px, py, pw, ph, 4);
+  ctx.stroke();
+  ctx.restore();
+
+  // portrait footer strip
+  ctx.save();
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(px, py + ph - 44, pw, 44);
+  ctx.fillStyle = p.chipInk;
+  ctx.font = `700 17px ${MONO}`;
+  ctx.letterSpacing = "3px";
   ctx.textAlign = "left";
-  ctx.fillStyle = "#151312";
-  ctx.font = `700 36px ${MONO}`;
-  ctx.fillText("FRAME//GOA", 80, 118);
+  ctx.fillText("SUBJECT / " + code, px + 18, py + ph - 15);
   ctx.textAlign = "right";
-  ctx.fillStyle = "#e2452c";
-  ctx.font = `700 28px ${MONO}`;
-  ctx.fillText("HH GOA 2026", SIZE - 80, 118);
+  ctx.fillText(img ? "CAPTURE OK" : "NO SIGNAL", px + pw - 18, py + ph - 15);
+  ctx.restore();
 
+  // ---- right technical column
+  const rx = px + pw + 40;
+  const rw = SIZE - M - rx;
+
+  label(ctx, "PARTICIPANT", rx, py + 18, p.dim, 15);
+  ctx.save();
+  ctx.fillStyle = p.accent;
+  const cs = fitText(ctx, code, rw, 30, (n) => `700 ${n}px ${MONO}`, 16);
+  ctx.font = `700 ${cs}px ${MONO}`;
   ctx.textAlign = "left";
-  const s = fitText(ctx, name, SIZE - 340, 82, (n) => `700 ${n}px ${SANS}`);
-  ctx.font = `700 ${s}px ${SANS}`;
-  ctx.fillStyle = "#151312";
-  ctx.fillText(name, 80, 852);
-  ctx.font = `500 27px ${MONO}`;
-  ctx.fillStyle = "#e2452c";
-  ctx.fillText(handle, 80, 898);
-  ctx.font = `400 25px ${MONO}`;
-  ctx.fillStyle = "rgba(21,19,18,0.7)";
-  ctx.fillText(`${college} · ${city}`, 80, 942);
+  ctx.fillText(code, rx, py + 52);
+  ctx.restore();
 
   ctx.save();
-  ctx.translate(SIZE - 210, 900);
-  ctx.rotate(-0.12);
-  ctx.strokeStyle = "#e2452c";
-  ctx.lineWidth = 5;
-  ctx.strokeRect(-100, -44, 200, 88);
-  ctx.fillStyle = "#e2452c";
-  ctx.textAlign = "center";
-  const rs = fitText(ctx, role, 170, 30, (n) => `700 ${n}px ${MONO}`);
-  ctx.font = `700 ${rs}px ${MONO}`;
-  ctx.fillText(role, 0, 10);
+  ctx.strokeStyle = p.dim;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(rx, py + 74); ctx.lineTo(rx + rw, py + 74); ctx.stroke();
   ctx.restore();
+
+  field(ctx, "ROLE", role, rx, py + 108, p, rw);
+  field(ctx, "ORG", college, rx, py + 186, p, rw);
+  field(ctx, "CITY", city, rx, py + 264, p, rw);
+  field(ctx, "CLEARANCE", "LEVEL 3 / BUILD", rx, py + 342, p, rw);
+
+  // QR block
+  const qs = 168;
+  const qy = py + ph - qs - 6;
+  drawQR(
+    ctx,
+    `HHGOA2026|${code}|${handle}`,
+    rx + 6,
+    qy,
+    qs,
+    frame === "susegad" ? "#151312" : "#0a0a0a",
+    frame === "susegad" ? "#f7f3ea" : "#f4f4f4",
+  );
+  label(ctx, "SCAN / VERIFY", rx + 6, qy + qs + 34, p.dim, 14);
+
+  // ---- name block (bottom left, asymmetrical)
+  const by = 852;
+  ctx.save();
+  ctx.textAlign = "left";
+  const ns = fitText(ctx, name, pw + 30, 96, (n) => `700 ${n}px ${SANS}`, 34);
+  ctx.font = `700 ${ns}px ${SANS}`;
+  ctx.fillStyle = p.ink;
+  ctx.fillText(name, M, by);
+  ctx.restore();
+
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.fillStyle = p.accent;
+  ctx.font = `500 27px ${MONO}`;
+  ctx.fillText(handle, M, by + 44);
+  ctx.restore();
+
+  // role chip
+  ctx.save();
+  ctx.font = `700 20px ${MONO}`;
+  ctx.letterSpacing = "2px";
+  const chipW = ctx.measureText(role).width + 46;
+  ctx.font = `500 27px ${MONO}`;
+  const handleW = ctx.measureText(handle).width;
+  ctx.font = `700 20px ${MONO}`;
+  const chipX = Math.min(M + handleW + 28, px + pw - chipW);
+  ctx.fillStyle = p.accent;
+  roundRect(ctx, chipX, by + 18, chipW, 38, 4);
+  ctx.fill();
+  ctx.fillStyle = p.chipInk;
+  ctx.textAlign = "left";
+  ctx.fillText(role, chipX + 23, by + 44);
+  ctx.restore();
+
+  // ---- bottom technical footer
+  ctx.save();
+  ctx.strokeStyle = p.accent;
+  ctx.globalAlpha = 0.35;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(M, by + 78);
+  ctx.lineTo(SIZE - M, by + 78);
+  ctx.stroke();
+  ctx.restore();
+
+  label(ctx, `ISSUED 2026 \u00B7 GOA, IN`, M, by + 112, p.dim, 15);
+  label(ctx, `FRAME//${frame.toUpperCase()}`, M + 340, by + 112, p.dim, 15);
+
+  ctx.save();
+  ctx.textAlign = "right";
+  ctx.fillStyle = p.accent;
+  ctx.font = `700 16px ${MONO}`;
+  ctx.letterSpacing = "3px";
+  ctx.fillText("FRAME//GOA \u2014 IDENTITY PASS", SIZE - M, by + 112);
+  ctx.restore();
+
+  ticks(ctx, p);
+  corners(ctx, p);
+
+  if (p.scan) {
+    ctx.save();
+    ctx.globalAlpha = p.scan;
+    ctx.fillStyle = p.accent;
+    for (let y = 0; y < SIZE; y += 4) ctx.fillRect(0, y, SIZE, 1);
+    ctx.restore();
+  }
 }
