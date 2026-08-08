@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Upload, Share2, Copy, RefreshCw } from "lucide-react";
+import { Download, Upload, Share2, Copy, RefreshCw, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,16 @@ export const Route = createFileRoute("/")({
 });
 
 const EMPTY: Identity = { name: "", handle: "", college: "", city: "", role: "" };
+
+const TICKER = [
+  "HH GOA 2026",
+  "15°N 74°E",
+  "NO LOGIN",
+  "RENDERS ON-DEVICE",
+  "4 FRAMES",
+  "1080×1080 PNG",
+  "SHIP FROM THE SHORE",
+];
 
 function Index() {
   const [identity, setIdentity] = useState<Identity>(EMPTY);
@@ -98,134 +108,248 @@ function Index() {
   };
 
   return (
-    <div className="min-h-screen grid-lines">
+    <div className="min-h-screen overflow-x-hidden">
       <Toaster position="top-center" />
-      <header className="border-b border-border/60 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
+
+      <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
           <div className="flex items-baseline gap-3">
-            <span className="font-sans text-xl font-bold tracking-tight text-gradient-goa">FRAME//GOA</span>
-            <span className="hidden text-xs text-muted-foreground sm:inline">v1.0 · no login</span>
+            <span className="font-sans text-lg font-bold tracking-[-0.03em]">
+              FRAME<span className="text-primary">//</span>GOA
+            </span>
+            <span className="hidden text-[10px] tracking-[0.28em] text-muted-foreground sm:inline">
+              IDENTITY UNIT
+            </span>
           </div>
-          <span className="rounded-full border border-primary/40 px-3 py-1 text-[11px] tracking-widest text-primary">
-            HH GOA 2026
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="hidden items-center gap-2 text-[10px] tracking-[0.28em] text-primary sm:flex">
+              <span className="size-1.5 animate-pulse rounded-full bg-primary" /> ONLINE
+            </span>
+            <a
+              href="#builder"
+              className="rounded-sm border border-primary/50 px-3 py-1.5 text-[11px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              BUILD BADGE
+            </a>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-5 py-10">
-        <section className="mb-10 max-w-2xl">
-          <p className="text-xs tracking-[0.3em] text-primary">$ ./generate --identity</p>
-          <h1 className="mt-3 font-sans text-4xl font-bold leading-tight sm:text-5xl">
-            Your hacker badge for the <span className="text-gradient-goa">Goa coast</span>.
+      {/* HERO */}
+      <section className="scanlines relative isolate overflow-hidden border-b border-primary/20">
+        <div className="topo absolute inset-0 -z-20 opacity-60" />
+        <div className="grid-lines absolute inset-0 -z-10" />
+        <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/70" />
+
+        <div className="mx-auto max-w-7xl px-5 pb-16 pt-14 sm:pb-24 sm:pt-20">
+          <div className="animate-rise flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.3em] text-muted-foreground">
+            <span className="border border-primary/40 px-2 py-1 text-primary">HACKER HOUSE</span>
+            <span>GOA · 2026</span>
+            <span className="hidden sm:inline">15.2993° N / 74.1240° E</span>
+          </div>
+
+          <h1 className="animate-rise mt-7 font-sans text-[clamp(3rem,13vw,10rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em]">
+            <span className="block">Frame</span>
+            <span className="block text-outline animate-flicker">//Goa</span>
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Upload a selfie, drop your details, pick a frame. Everything renders locally in your
-            browser — nothing is uploaded anywhere.
-          </p>
-        </section>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_460px]">
-          <div className="space-y-6">
-            <div className="rounded-lg border border-border bg-card/70 p-5">
-              <Label className="text-xs tracking-widest text-muted-foreground">01 · SELFIE</Label>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
-              <div className="mt-3 flex flex-wrap gap-3">
-                <Button onClick={() => fileRef.current?.click()} className="gap-2">
-                  <Upload className="size-4" /> {img ? "Replace photo" : "Upload selfie"}
-                </Button>
-                {img && (
-                  <Button variant="outline" className="gap-2" onClick={() => setImg(null)}>
-                    <RefreshCw className="size-4" /> Clear
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card/70 p-5">
-              <Label className="text-xs tracking-widest text-muted-foreground">02 · IDENTITY</Label>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <Field label="Name" value={identity.name} onChange={set("name")} placeholder="Riya Naik" />
-                <Field label="Handle" value={identity.handle} onChange={set("handle")} placeholder="@riyabuilds" />
-                <Field label="College / Org" value={identity.college} onChange={set("college")} placeholder="BITS Goa" />
-                <Field label="City" value={identity.city} onChange={set("city")} placeholder="Panaji" />
-                <div className="sm:col-span-2">
-                  <Field label="Role" value={identity.role} onChange={set("role")} placeholder="Frontend Hacker" />
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+            <p className="animate-rise max-w-lg text-sm leading-relaxed text-muted-foreground">
+              The identity unit for Hacker House Goa 2026. Load a selfie, stamp your handle, pick a
+              frame cut from salt air and terminal green. Everything renders on your device — no
+              account, no upload, no server watching.
+            </p>
+            <div className="animate-rise grid grid-cols-3 gap-px border border-primary/25 bg-primary/20">
+              {[
+                ["04", "FRAMES"],
+                ["1080", "PX SQUARE"],
+                ["00", "LOGINS"],
+              ].map(([n, l]) => (
+                <div key={l} className="bg-background/80 px-3 py-4">
+                  <p className="font-sans text-2xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
+                  <p className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground">{l}</p>
                 </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card/70 p-5">
-              <Label className="text-xs tracking-widest text-muted-foreground">03 · FRAME</Label>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {FRAMES.map((f) => {
-                  const active = f.id === frame;
-                  return (
-                    <button
-                      key={f.id}
-                      type="button"
-                      onClick={() => setFrame(f.id)}
-                      className={`rounded-md border p-4 text-left transition-colors ${
-                        active
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50 hover:bg-secondary/40"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        {f.swatch.map((c) => (
-                          <span
-                            key={c}
-                            className="size-4 rounded-sm border border-border/70"
-                            style={{ backgroundColor: c }}
-                          />
-                        ))}
-                      </div>
-                      <p className="mt-3 font-sans text-sm font-bold tracking-wide">{f.name}</p>
-                      <p className="mt-1 text-xs leading-snug text-muted-foreground">{f.tagline}</p>
-                    </button>
-                  );
-                })}
-              </div>
+              ))}
             </div>
           </div>
 
-          <aside className="lg:sticky lg:top-8 lg:self-start">
-            <div className="rounded-lg border border-border bg-card/70 p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <Label className="text-xs tracking-widest text-muted-foreground">LIVE PREVIEW</Label>
-                <span className="text-[11px] text-muted-foreground">1080 × 1080</span>
-              </div>
-              <canvas
-                ref={canvasRef}
-                width={SIZE}
-                height={SIZE}
-                className="aspect-square w-full rounded-md border border-border"
-              />
-              <div className="mt-4 grid gap-2">
-                <Button onClick={download} className="gap-2">
-                  <Download className="size-4" /> Download PNG
-                </Button>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" onClick={shareX} className="gap-2">
-                    <Share2 className="size-4" /> Share on X
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a
+              href="#builder"
+              className="group inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5"
+            >
+              GENERATE MY FRAME
+              <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
+            </a>
+            <span className="text-[11px] tracking-[0.2em] text-muted-foreground">
+              ~20 SECONDS · NO SIGNUP
+            </span>
+          </div>
+        </div>
+
+        <div className="flex overflow-hidden border-t border-primary/20 bg-primary/5 py-2">
+          <div className="animate-marquee flex shrink-0 gap-8 whitespace-nowrap pr-8">
+            {[...TICKER, ...TICKER].map((t, i) => (
+              <span key={i} className="text-[10px] tracking-[0.35em] text-primary/70">
+                {t} <span className="text-primary/30">//</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BUILDER */}
+      <main id="builder" className="relative">
+        <div className="grid-fine pointer-events-none absolute inset-0 opacity-40" />
+        <div className="relative mx-auto max-w-7xl px-5 py-14">
+          <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
+            <div className="space-y-6">
+              <Panel step="01" title="SELFIE">
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
+                <div className="flex flex-wrap gap-3">
+                  <Button onClick={() => fileRef.current?.click()} className="gap-2 rounded-sm tracking-[0.1em]">
+                    <Upload className="size-4" /> {img ? "REPLACE PHOTO" : "UPLOAD SELFIE"}
                   </Button>
-                  <Button variant="outline" onClick={copyText} className="gap-2">
-                    <Copy className="size-4" /> Copy text
-                  </Button>
+                  {img && (
+                    <Button
+                      variant="outline"
+                      className="gap-2 rounded-sm tracking-[0.1em]"
+                      onClick={() => setImg(null)}
+                    >
+                      <RefreshCw className="size-4" /> CLEAR
+                    </Button>
+                  )}
                 </div>
-                <p className="text-[11px] leading-relaxed text-muted-foreground">
-                  X can't attach images automatically — download the PNG first, then attach it to
-                  the pre-filled post.
-                </p>
-              </div>
+              </Panel>
+
+              <Panel step="02" title="IDENTITY">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Name" value={identity.name} onChange={set("name")} placeholder="Riya Naik" />
+                  <Field label="Handle" value={identity.handle} onChange={set("handle")} placeholder="@riyabuilds" />
+                  <Field
+                    label="College / Org"
+                    value={identity.college}
+                    onChange={set("college")}
+                    placeholder="BITS Goa"
+                  />
+                  <Field label="City" value={identity.city} onChange={set("city")} placeholder="Panaji" />
+                  <div className="sm:col-span-2">
+                    <Field
+                      label="Role"
+                      value={identity.role}
+                      onChange={set("role")}
+                      placeholder="Frontend Hacker"
+                    />
+                  </div>
+                </div>
+              </Panel>
+
+              <Panel step="03" title="FRAME">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {FRAMES.map((f) => {
+                    const active = f.id === frame;
+                    return (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setFrame(f.id)}
+                        className={`group relative overflow-hidden rounded-sm border p-4 text-left transition-all duration-200 ${
+                          active
+                            ? "border-primary bg-primary/10 shadow-[0_0_0_1px_var(--primary)]"
+                            : "border-border hover:-translate-y-0.5 hover:border-primary/60"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            {f.swatch.map((c) => (
+                              <span
+                                key={c}
+                                className="size-4 border border-border/70"
+                                style={{ backgroundColor: c }}
+                              />
+                            ))}
+                          </div>
+                          <span
+                            className={`text-[10px] tracking-[0.2em] ${active ? "text-primary" : "text-muted-foreground/60"}`}
+                          >
+                            {active ? "ACTIVE" : "SELECT"}
+                          </span>
+                        </div>
+                        <p className="mt-3 font-sans text-base font-bold uppercase tracking-tight">{f.name}</p>
+                        <p className="mt-1 text-xs leading-snug text-muted-foreground">{f.tagline}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Panel>
             </div>
-          </aside>
+
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <div className="bracketed border border-primary/30 bg-card/60 p-5 backdrop-blur-sm">
+                <div className="mb-3 flex items-center justify-between text-[10px] tracking-[0.25em]">
+                  <span className="text-primary">LIVE PREVIEW</span>
+                  <span className="text-muted-foreground">1080 × 1080</span>
+                </div>
+                <div className="scanlines relative">
+                  <canvas
+                    ref={canvasRef}
+                    width={SIZE}
+                    height={SIZE}
+                    className="aspect-square w-full border border-border"
+                  />
+                </div>
+                <div className="mt-4 grid gap-2">
+                  <Button onClick={download} className="gap-2 rounded-sm tracking-[0.12em]">
+                    <Download className="size-4" /> DOWNLOAD PNG
+                  </Button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button variant="outline" onClick={shareX} className="gap-2 rounded-sm tracking-[0.1em]">
+                      <Share2 className="size-4" /> SHARE ON X
+                    </Button>
+                    <Button variant="outline" onClick={copyText} className="gap-2 rounded-sm tracking-[0.1em]">
+                      <Copy className="size-4" /> COPY TEXT
+                    </Button>
+                  </div>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    X can't attach images automatically — download the PNG first, then attach it to
+                    the pre-filled post.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
 
-      <footer className="border-t border-border/60 py-8 text-center text-xs text-muted-foreground">
-        FRAME//GOA · built for HH Goa 2026 · renders entirely on-device
+      <footer className="relative border-t border-primary/20">
+        <div className="topo absolute inset-0 -z-10 opacity-30" />
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-8 text-[10px] tracking-[0.25em] text-muted-foreground">
+          <span>FRAME//GOA · HH GOA 2026</span>
+          <span className="text-primary/70">RENDERS ENTIRELY ON-DEVICE</span>
+        </div>
       </footer>
     </div>
+  );
+}
+
+function Panel({
+  step,
+  title,
+  children,
+}: {
+  step: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="bracketed border border-border bg-card/60 p-5 backdrop-blur-sm">
+      <div className="mb-4 flex items-baseline gap-3 border-b border-border/70 pb-3">
+        <span className="font-sans text-2xl font-bold leading-none text-primary/40">{step}</span>
+        <h2 className="text-xs tracking-[0.3em] text-foreground">{title}</h2>
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -242,8 +366,14 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Input value={value} onChange={onChange} placeholder={placeholder} maxLength={40} />
+      <Label className="text-[10px] tracking-[0.2em] text-muted-foreground">{label.toUpperCase()}</Label>
+      <Input
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        maxLength={40}
+        className="rounded-sm border-border bg-background/60"
+      />
     </div>
   );
 }
