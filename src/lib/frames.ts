@@ -504,14 +504,8 @@ export function drawFrame(
   }
   ctx.restore();
 
-  if (p.grain) {
-    ctx.save();
-    ctx.fillStyle = "rgba(21,19,18,0.05)";
-    for (let i = 0; i < p.grain; i++) {
-      ctx.fillRect(Math.random() * SIZE, Math.random() * SIZE, 2, 2);
-    }
-    ctx.restore();
-  }
+  goaTexture(ctx, frame, p);
+
 
   // ---- top brand bar
   const M = 60;
