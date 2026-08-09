@@ -257,7 +257,7 @@ function field(
 function ticks(ctx: CanvasRenderingContext2D, p: Palette) {
   ctx.save();
   ctx.strokeStyle = p.accent;
-  ctx.globalAlpha = 0.45;
+  ctx.globalAlpha = 0.3;
   ctx.lineWidth = 2;
   for (let x = 60; x < SIZE - 60; x += 20) {
     const long = x % 100 === 0;
@@ -267,6 +267,168 @@ function ticks(ctx: CanvasRenderingContext2D, p: Palette) {
     ctx.stroke();
   }
   ctx.restore();
+}
+
+/* deterministic pseudo-random so re-renders are stable */
+function rng(seed: number) {
+  let s = seed || 1;
+  return () => {
+    s = (s * 1664525 + 1013904223) % 4294967296;
+    return s / 4294967296;
+  };
+}
+
+/* sun-bleached paper fibres + speckle */
+function paperTexture(ctx: CanvasRenderingContext2D, p: Palette, count: number) {
+  const r = rng(90210);
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = p.ink;
+  for (let i = 0; i < count; i++) {
+    ctx.globalAlpha = 0.02 + r() * 0.05;
+    ctx.fillRect(r() * SIZE, r() * SIZE, 1 + r() * 2, 1 + r() * 1.5);
+  }
+  ctx.globalAlpha = 0.05;
+  ctx.strokeStyle = p.ink;
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 60; i++) {
+    const y = r() * SIZE;
+    ctx.beginPath();
+    ctx.moveTo(r() * SIZE * 0.4, y);
+    ctx.lineTo(r() * SIZE, y + (r() - 0.5) * 8);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* receding tide lines washing across the lower half */
+function tideLines(ctx: CanvasRenderingContext2D, color: string, alpha: number) {
+  const r = rng(4242);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < 26; i++) {
+    const base = SIZE * 0.52 + i * 22;
+    ctx.globalAlpha = alpha * (1 - i / 30);
+    ctx.beginPath();
+    for (let x = 0; x <= SIZE; x += 24) {
+      const y = base + Math.sin(x / 150 + i * 0.6) * (10 + i * 0.8) + (r() - 0.5) * 3;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* palm frond silhouettes anchored to a corner */
+function palmFrond(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  scale: number,
+  rot: number,
+  color: string,
+  alpha: number,
+) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(scale, scale);
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineCap = "round";
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.quadraticCurveTo(120, -40, 260, -60);
+  ctx.stroke();
+  ctx.lineWidth = 3;
+  for (let i = 1; i <= 14; i++) {
+    const t = i / 15;
+    const bx = 260 * t;
+    const by = -40 * t * (1 - t) * 2 - 60 * t * t;
+    const len = 70 * Math.sin(Math.PI * t) + 16;
+    for (const dir of [-1, 1]) {
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.quadraticCurveTo(bx + len * 0.5, by + dir * len * 0.35, bx + len * 0.75, by + dir * len);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+/* rubber-stamp ink mark */
+function inkStamp(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  color: string,
+  top: string,
+  bottom: string,
+) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-0.22);
+  ctx.globalAlpha = 0.5;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(0, 0, r - 10, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.textAlign = "center";
+  ctx.font = `700 17px ${MONO}`;
+  ctx.letterSpacing = "3px";
+  ctx.fillText(top, 0, -8);
+  ctx.font = `500 12px ${MONO}`;
+  ctx.fillText(bottom, 0, 14);
+  ctx.beginPath();
+  ctx.moveTo(-r + 22, 26);
+  ctx.lineTo(r - 22, 26);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function goaTexture(ctx: CanvasRenderingContext2D, frame: FrameId, p: Palette) {
+  if (frame === "susegad") {
+    paperTexture(ctx, p, 2600);
+    tideLines(ctx, "rgba(21,19,18,0.45)", 0.1);
+    palmFrond(ctx, -40, 250, 1.1, 0.25, "rgba(21,19,18,0.5)", 0.08);
+    palmFrond(ctx, SIZE + 40, 980, 1.3, Math.PI - 0.3, "rgba(21,19,18,0.5)", 0.07);
+  } else if (frame === "palm") {
+    palmFrond(ctx, -60, 180, 1.4, 0.2, p.accent2, 0.16);
+    palmFrond(ctx, SIZE + 60, 1010, 1.5, Math.PI - 0.25, p.accent2, 0.13);
+    tideLines(ctx, p.accent2, 0.1);
+  } else if (frame === "sunset") {
+    ctx.save();
+    ctx.globalAlpha = 0.22;
+    ctx.fillStyle = p.accent2;
+    ctx.beginPath();
+    ctx.arc(820, 250, 190, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    tideLines(ctx, p.accent2, 0.14);
+    palmFrond(ctx, SIZE + 40, 940, 1.4, Math.PI - 0.28, "#1b0620", 0.35);
+  } else {
+    /* terminal: contour survey lines */
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.strokeStyle = p.accent;
+    ctx.lineWidth = 1.5;
+    for (let i = 1; i < 16; i++) {
+      ctx.beginPath();
+      ctx.ellipse(300, 760, i * 52, i * 30, -0.35, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+    tideLines(ctx, p.accent, 0.06);
+  }
 }
 
 function corners(ctx: CanvasRenderingContext2D, p: Palette) {
@@ -290,6 +452,7 @@ function corners(ctx: CanvasRenderingContext2D, p: Palette) {
   }
   ctx.restore();
 }
+
 
 export function drawFrame(
   ctx: CanvasRenderingContext2D,
@@ -341,14 +504,8 @@ export function drawFrame(
   }
   ctx.restore();
 
-  if (p.grain) {
-    ctx.save();
-    ctx.fillStyle = "rgba(21,19,18,0.05)";
-    for (let i = 0; i < p.grain; i++) {
-      ctx.fillRect(Math.random() * SIZE, Math.random() * SIZE, 2, 2);
-    }
-    ctx.restore();
-  }
+  goaTexture(ctx, frame, p);
+
 
   // ---- top brand bar
   const M = 60;
@@ -471,29 +628,9 @@ export function drawFrame(
   const rx = px + pw + 40;
   const rw = SIZE - M - rx;
 
-  label(ctx, "PARTICIPANT", rx, py + 18, p.dim, 15);
-  ctx.save();
-  ctx.fillStyle = p.accent;
-  const cs = fitText(ctx, code, rw, 30, (n) => `700 ${n}px ${MONO}`, 16);
-  ctx.font = `700 ${cs}px ${MONO}`;
-  ctx.textAlign = "left";
-  ctx.fillText(code, rx, py + 52);
-  ctx.restore();
-
-  ctx.save();
-  ctx.strokeStyle = p.dim;
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(rx, py + 74); ctx.lineTo(rx + rw, py + 74); ctx.stroke();
-  ctx.restore();
-
-  field(ctx, "ROLE", role, rx, py + 108, p, rw);
-  field(ctx, "ORG", college, rx, py + 186, p, rw);
-  field(ctx, "CITY", city, rx, py + 264, p, rw);
-  field(ctx, "CLEARANCE", "LEVEL 3 / BUILD", rx, py + 342, p, rw);
-
-  // QR block
-  const qs = 168;
-  const qy = py + ph - qs - 6;
+  // QR block — top of the data column
+  const qs = 150;
+  const qy = py + 12;
   drawQR(
     ctx,
     `HHGOA2026|${code}|${handle}`,
@@ -503,7 +640,28 @@ export function drawFrame(
     frame === "susegad" ? "#151312" : "#0a0a0a",
     frame === "susegad" ? "#f7f3ea" : "#f4f4f4",
   );
-  label(ctx, "SCAN / VERIFY", rx + 6, qy + qs + 34, p.dim, 14);
+  label(ctx, "SCAN / VERIFY", rx + 6, qy + qs + 32, p.dim, 14);
+
+  const cy0 = qy + qs + 76;
+  label(ctx, "PARTICIPANT", rx, cy0, p.dim, 15);
+  ctx.save();
+  ctx.fillStyle = p.accent;
+  const cs = fitText(ctx, code, rw, 30, (n) => `700 ${n}px ${MONO}`, 16);
+  ctx.font = `700 ${cs}px ${MONO}`;
+  ctx.textAlign = "left";
+  ctx.fillText(code, rx, cy0 + 34);
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = p.dim;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(rx, cy0 + 56); ctx.lineTo(rx + rw, cy0 + 56); ctx.stroke();
+  ctx.restore();
+
+  field(ctx, "ROLE", role, rx, cy0 + 92, p, rw);
+  field(ctx, "ORG", college, rx, cy0 + 158, p, rw);
+  field(ctx, "CITY", city, rx, cy0 + 224, p, rw);
+
 
   // ---- name block (bottom left, asymmetrical)
   const by = 852;
@@ -561,7 +719,10 @@ export function drawFrame(
   ctx.fillText("FRAME//GOA \u2014 IDENTITY PASS", SIZE - M, by + 112);
   ctx.restore();
 
+  inkStamp(ctx, 905, 878, 74, p.accent, "HH GOA", "ISSUED \u00B7 2026");
+
   ticks(ctx, p);
+
   corners(ctx, p);
 
   if (p.scan) {
