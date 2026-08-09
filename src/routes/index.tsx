@@ -42,6 +42,8 @@ function Index() {
   const [identity, setIdentity] = useState<Identity>(EMPTY);
   const [frame, setFrame] = useState<FrameId>("terminal");
   const [img, setImg] = useState<HTMLImageElement | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [revealKey, setRevealKey] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -70,15 +72,29 @@ function Index() {
       toast.error("That file isn't an image.");
       return;
     }
+    setLoading(true);
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
-      image.onload = () => setImg(image);
-      image.onerror = () => toast.error("Couldn't read that image.");
+      image.onload = () => {
+        setImg(image);
+        setRevealKey((k) => k + 1);
+        // let the scan pass finish before dropping the overlay
+        window.setTimeout(() => setLoading(false), 420);
+      };
+      image.onerror = () => {
+        setLoading(false);
+        toast.error("Couldn't read that image.");
+      };
       image.src = reader.result as string;
+    };
+    reader.onerror = () => {
+      setLoading(false);
+      toast.error("Couldn't read that file.");
     };
     reader.readAsDataURL(file);
   };
+
 
   const download = () => {
     const c = canvasRef.current;
