@@ -166,9 +166,11 @@ function Index() {
                 ["1080", "PX SQUARE"],
                 ["00", "LOGINS"],
               ].map(([n, l]) => (
-                <div key={l} className="bg-background/80 px-3 py-4">
-                  <p className="font-sans text-2xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
-                  <p className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground">{l}</p>
+                <div key={l} className="min-w-0 bg-background/80 px-2 py-3 sm:px-3 sm:py-4">
+                  <p className="font-sans text-xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
+                  <p className="mt-1 text-[9px] tracking-[0.15em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
+                    {l}
+                  </p>
                 </div>
               ))}
             </div>
@@ -177,7 +179,7 @@ function Index() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#builder"
-              className="group inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5"
+              className="group inline-flex w-full items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5 sm:w-auto"
             >
               GENERATE MY FRAME
               <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
@@ -186,6 +188,7 @@ function Index() {
               ~20 SECONDS · NO SIGNUP
             </span>
           </div>
+
         </div>
 
         <div className="flex overflow-hidden border-t border-primary/20 bg-primary/5 py-2">
