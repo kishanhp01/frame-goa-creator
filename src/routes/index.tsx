@@ -292,13 +292,13 @@ function Index() {
               </Panel>
             </div>
 
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="bracketed border border-primary/30 bg-card/60 p-5 backdrop-blur-sm">
-                <div className="mb-3 flex items-center justify-between text-[10px] tracking-[0.25em]">
-                  <span className="text-primary">LIVE PREVIEW</span>
-                  <span className="text-muted-foreground">1080 × 1080</span>
+            <aside className="order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start">
+              <div className="bracketed border border-primary/30 bg-card/60 p-4 backdrop-blur-sm sm:p-5">
+                <div className="mb-3 flex items-center justify-between gap-2 text-[10px] tracking-[0.25em]">
+                  <span className="truncate text-primary">LIVE PREVIEW</span>
+                  <span className="shrink-0 text-muted-foreground">1080 × 1080</span>
                 </div>
-                <div className="scanlines relative">
+                <div className="scanlines relative mx-auto w-full max-w-[420px] lg:max-w-none">
                   <canvas
                     ref={canvasRef}
                     width={SIZE}
@@ -307,14 +307,22 @@ function Index() {
                   />
                 </div>
                 <div className="mt-4 grid gap-2">
-                  <Button onClick={download} className="gap-2 rounded-sm tracking-[0.12em]">
+                  <Button onClick={download} className="h-11 gap-2 rounded-sm tracking-[0.12em]">
                     <Download className="size-4" /> DOWNLOAD PNG
                   </Button>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" onClick={shareX} className="gap-2 rounded-sm tracking-[0.1em]">
+                  <div className="grid grid-cols-1 gap-2 xs:grid-cols-2">
+                    <Button
+                      variant="outline"
+                      onClick={shareX}
+                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                    >
                       <Share2 className="size-4" /> SHARE ON X
                     </Button>
-                    <Button variant="outline" onClick={copyText} className="gap-2 rounded-sm tracking-[0.1em]">
+                    <Button
+                      variant="outline"
+                      onClick={copyText}
+                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                    >
                       <Copy className="size-4" /> COPY TEXT
                     </Button>
                   </div>
@@ -325,6 +333,7 @@ function Index() {
                 </div>
               </div>
             </aside>
+
           </div>
         </div>
       </main>
