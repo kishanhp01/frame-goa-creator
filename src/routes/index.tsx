@@ -310,7 +310,7 @@ function Index() {
                   <Button onClick={download} className="h-11 gap-2 rounded-sm tracking-[0.12em]">
                     <Download className="size-4" /> DOWNLOAD PNG
                   </Button>
-                  <div className="grid grid-cols-1 gap-2 xs:grid-cols-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant="outline"
                       onClick={shareX}
@@ -340,7 +340,7 @@ function Index() {
 
       <footer className="relative border-t border-primary/20">
         <div className="topo absolute inset-0 -z-10 opacity-30" />
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-8 text-[10px] tracking-[0.25em] text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-[10px] sm:px-5 tracking-[0.25em] text-muted-foreground">
           <span>FRAME//GOA · HH GOA 2026</span>
           <span className="text-primary/70">RENDERS ENTIRELY ON-DEVICE</span>
         </div>
