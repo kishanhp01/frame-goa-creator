@@ -142,7 +142,7 @@ function Index() {
         <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-primary/10 blur-3xl" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/70" />
 
-        <div className="mx-auto max-w-7xl px-5 pb-16 pt-14 sm:pb-24 sm:pt-20">
+        <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-5 sm:pb-24 sm:pt-20">
           <div className="animate-rise flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.3em] text-muted-foreground">
             <span className="border border-primary/40 px-2 py-1 text-primary">HACKER HOUSE</span>
             <span>GOA · 2026</span>
