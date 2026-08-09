@@ -628,29 +628,9 @@ export function drawFrame(
   const rx = px + pw + 40;
   const rw = SIZE - M - rx;
 
-  label(ctx, "PARTICIPANT", rx, py + 18, p.dim, 15);
-  ctx.save();
-  ctx.fillStyle = p.accent;
-  const cs = fitText(ctx, code, rw, 30, (n) => `700 ${n}px ${MONO}`, 16);
-  ctx.font = `700 ${cs}px ${MONO}`;
-  ctx.textAlign = "left";
-  ctx.fillText(code, rx, py + 52);
-  ctx.restore();
-
-  ctx.save();
-  ctx.strokeStyle = p.dim;
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(rx, py + 74); ctx.lineTo(rx + rw, py + 74); ctx.stroke();
-  ctx.restore();
-
-  field(ctx, "ROLE", role, rx, py + 108, p, rw);
-  field(ctx, "ORG", college, rx, py + 186, p, rw);
-  field(ctx, "CITY", city, rx, py + 264, p, rw);
-  field(ctx, "CLEARANCE", "LEVEL 3 / BUILD", rx, py + 342, p, rw);
-
-  // QR block
-  const qs = 168;
-  const qy = py + ph - qs - 6;
+  // QR block — top of the data column
+  const qs = 150;
+  const qy = py + 12;
   drawQR(
     ctx,
     `HHGOA2026|${code}|${handle}`,
@@ -660,7 +640,28 @@ export function drawFrame(
     frame === "susegad" ? "#151312" : "#0a0a0a",
     frame === "susegad" ? "#f7f3ea" : "#f4f4f4",
   );
-  label(ctx, "SCAN / VERIFY", rx + 6, qy + qs + 34, p.dim, 14);
+  label(ctx, "SCAN / VERIFY", rx + 6, qy + qs + 32, p.dim, 14);
+
+  const cy0 = qy + qs + 76;
+  label(ctx, "PARTICIPANT", rx, cy0, p.dim, 15);
+  ctx.save();
+  ctx.fillStyle = p.accent;
+  const cs = fitText(ctx, code, rw, 30, (n) => `700 ${n}px ${MONO}`, 16);
+  ctx.font = `700 ${cs}px ${MONO}`;
+  ctx.textAlign = "left";
+  ctx.fillText(code, rx, cy0 + 34);
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = p.dim;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(rx, cy0 + 56); ctx.lineTo(rx + rw, cy0 + 56); ctx.stroke();
+  ctx.restore();
+
+  field(ctx, "ROLE", role, rx, cy0 + 92, p, rw);
+  field(ctx, "ORG", college, rx, cy0 + 158, p, rw);
+  field(ctx, "CITY", city, rx, cy0 + 224, p, rw);
+
 
   // ---- name block (bottom left, asymmetrical)
   const by = 852;
