@@ -112,22 +112,22 @@ function Index() {
       <Toaster position="top-center" />
 
       <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
-          <div className="flex items-baseline gap-3">
-            <span className="font-sans text-lg font-bold tracking-[-0.03em]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between sm:px-5">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <span className="truncate font-sans text-base font-bold tracking-[-0.03em] sm:text-lg">
               FRAME<span className="text-primary">//</span>GOA
             </span>
             <span className="hidden text-[10px] tracking-[0.28em] text-muted-foreground sm:inline">
               IDENTITY UNIT
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <span className="hidden items-center gap-2 text-[10px] tracking-[0.28em] text-primary sm:flex">
               <span className="size-1.5 animate-pulse rounded-full bg-primary" /> ONLINE
             </span>
             <a
               href="#builder"
-              className="rounded-sm border border-primary/50 px-3 py-1.5 text-[11px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+              className="whitespace-nowrap rounded-sm border border-primary/50 px-3 py-1.5 text-[10px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-[11px]"
             >
               BUILD BADGE
             </a>
@@ -142,7 +142,7 @@ function Index() {
         <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-primary/10 blur-3xl" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/70" />
 
-        <div className="mx-auto max-w-7xl px-5 pb-16 pt-14 sm:pb-24 sm:pt-20">
+        <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-5 sm:pb-24 sm:pt-20">
           <div className="animate-rise flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.3em] text-muted-foreground">
             <span className="border border-primary/40 px-2 py-1 text-primary">HACKER HOUSE</span>
             <span>GOA · 2026</span>
@@ -166,9 +166,11 @@ function Index() {
                 ["1080", "PX SQUARE"],
                 ["00", "LOGINS"],
               ].map(([n, l]) => (
-                <div key={l} className="bg-background/80 px-3 py-4">
-                  <p className="font-sans text-2xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
-                  <p className="mt-1 text-[10px] tracking-[0.2em] text-muted-foreground">{l}</p>
+                <div key={l} className="min-w-0 bg-background/80 px-2 py-3 sm:px-3 sm:py-4">
+                  <p className="font-sans text-xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
+                  <p className="mt-1 text-[9px] tracking-[0.15em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
+                    {l}
+                  </p>
                 </div>
               ))}
             </div>
@@ -177,7 +179,7 @@ function Index() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#builder"
-              className="group inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5"
+              className="group inline-flex w-full items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5 sm:w-auto"
             >
               GENERATE MY FRAME
               <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
@@ -186,6 +188,7 @@ function Index() {
               ~20 SECONDS · NO SIGNUP
             </span>
           </div>
+
         </div>
 
         <div className="flex overflow-hidden border-t border-primary/20 bg-primary/5 py-2">
@@ -202,19 +205,22 @@ function Index() {
       {/* BUILDER */}
       <main id="builder" className="relative">
         <div className="grid-fine pointer-events-none absolute inset-0 opacity-40" />
-        <div className="relative mx-auto max-w-7xl px-5 py-14">
-          <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
-            <div className="space-y-6">
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-14">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1fr_440px]">
+            <div className="order-2 space-y-6 lg:order-1">
               <Panel step="01" title="SELFIE">
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
-                <div className="flex flex-wrap gap-3">
-                  <Button onClick={() => fileRef.current?.click()} className="gap-2 rounded-sm tracking-[0.1em]">
+                <div className="grid gap-3 sm:flex sm:flex-wrap">
+                  <Button
+                    onClick={() => fileRef.current?.click()}
+                    className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
+                  >
                     <Upload className="size-4" /> {img ? "REPLACE PHOTO" : "UPLOAD SELFIE"}
                   </Button>
                   {img && (
                     <Button
                       variant="outline"
-                      className="gap-2 rounded-sm tracking-[0.1em]"
+                      className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
                       onClick={() => setImg(null)}
                     >
                       <RefreshCw className="size-4" /> CLEAR
@@ -222,6 +228,7 @@ function Index() {
                   )}
                 </div>
               </Panel>
+
 
               <Panel step="02" title="IDENTITY">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -285,13 +292,13 @@ function Index() {
               </Panel>
             </div>
 
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="bracketed border border-primary/30 bg-card/60 p-5 backdrop-blur-sm">
-                <div className="mb-3 flex items-center justify-between text-[10px] tracking-[0.25em]">
-                  <span className="text-primary">LIVE PREVIEW</span>
-                  <span className="text-muted-foreground">1080 × 1080</span>
+            <aside className="order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start">
+              <div className="bracketed border border-primary/30 bg-card/60 p-4 backdrop-blur-sm sm:p-5">
+                <div className="mb-3 flex items-center justify-between gap-2 text-[10px] tracking-[0.25em]">
+                  <span className="truncate text-primary">LIVE PREVIEW</span>
+                  <span className="shrink-0 text-muted-foreground">1080 × 1080</span>
                 </div>
-                <div className="scanlines relative">
+                <div className="scanlines relative mx-auto w-full max-w-[420px] lg:max-w-none">
                   <canvas
                     ref={canvasRef}
                     width={SIZE}
@@ -300,14 +307,22 @@ function Index() {
                   />
                 </div>
                 <div className="mt-4 grid gap-2">
-                  <Button onClick={download} className="gap-2 rounded-sm tracking-[0.12em]">
+                  <Button onClick={download} className="h-11 gap-2 rounded-sm tracking-[0.12em]">
                     <Download className="size-4" /> DOWNLOAD PNG
                   </Button>
                   <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" onClick={shareX} className="gap-2 rounded-sm tracking-[0.1em]">
+                    <Button
+                      variant="outline"
+                      onClick={shareX}
+                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                    >
                       <Share2 className="size-4" /> SHARE ON X
                     </Button>
-                    <Button variant="outline" onClick={copyText} className="gap-2 rounded-sm tracking-[0.1em]">
+                    <Button
+                      variant="outline"
+                      onClick={copyText}
+                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                    >
                       <Copy className="size-4" /> COPY TEXT
                     </Button>
                   </div>
@@ -318,13 +333,14 @@ function Index() {
                 </div>
               </div>
             </aside>
+
           </div>
         </div>
       </main>
 
       <footer className="relative border-t border-primary/20">
         <div className="topo absolute inset-0 -z-10 opacity-30" />
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-8 text-[10px] tracking-[0.25em] text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-[10px] sm:px-5 tracking-[0.25em] text-muted-foreground">
           <span>FRAME//GOA · HH GOA 2026</span>
           <span className="text-primary/70">RENDERS ENTIRELY ON-DEVICE</span>
         </div>
