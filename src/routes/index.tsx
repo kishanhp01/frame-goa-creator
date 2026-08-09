@@ -205,19 +205,22 @@ function Index() {
       {/* BUILDER */}
       <main id="builder" className="relative">
         <div className="grid-fine pointer-events-none absolute inset-0 opacity-40" />
-        <div className="relative mx-auto max-w-7xl px-5 py-14">
-          <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
-            <div className="space-y-6">
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-14">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1fr_440px]">
+            <div className="order-2 space-y-6 lg:order-1">
               <Panel step="01" title="SELFIE">
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
-                <div className="flex flex-wrap gap-3">
-                  <Button onClick={() => fileRef.current?.click()} className="gap-2 rounded-sm tracking-[0.1em]">
+                <div className="grid gap-3 sm:flex sm:flex-wrap">
+                  <Button
+                    onClick={() => fileRef.current?.click()}
+                    className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
+                  >
                     <Upload className="size-4" /> {img ? "REPLACE PHOTO" : "UPLOAD SELFIE"}
                   </Button>
                   {img && (
                     <Button
                       variant="outline"
-                      className="gap-2 rounded-sm tracking-[0.1em]"
+                      className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
                       onClick={() => setImg(null)}
                     >
                       <RefreshCw className="size-4" /> CLEAR
@@ -225,6 +228,7 @@ function Index() {
                   )}
                 </div>
               </Panel>
+
 
               <Panel step="02" title="IDENTITY">
                 <div className="grid gap-4 sm:grid-cols-2">
