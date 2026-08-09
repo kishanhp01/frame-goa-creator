@@ -143,7 +143,7 @@ function Index() {
             </span>
             <a
               href="#builder"
-              className="whitespace-nowrap rounded-sm border border-primary/50 px-3 py-1.5 text-[10px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-[11px]"
+              className="hover-glow whitespace-nowrap rounded-none border border-primary/50 px-3 py-1.5 text-[10px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-[11px]"
             >
               BUILD BADGE
             </a>
@@ -158,7 +158,7 @@ function Index() {
         <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-primary/10 blur-3xl" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/70" />
 
-        <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-5 sm:pb-24 sm:pt-20">
+        <div className="mx-auto max-w-7xl px-5 pb-20 pt-16 sm:px-8 sm:pb-32 sm:pt-28">
           <div className="animate-rise flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.3em] text-muted-foreground">
             <span className="border border-primary/40 px-2 py-1 text-primary">HACKER HOUSE</span>
             <span>GOA · 2026</span>
@@ -195,7 +195,7 @@ function Index() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#builder"
-              className="group inline-flex w-full items-center justify-center gap-2 bg-primary px-6 py-3 text-sm font-bold tracking-[0.15em] text-primary-foreground transition-transform hover:-translate-y-0.5 sm:w-auto"
+              className="hover-glow group inline-flex w-full items-center justify-center gap-2 bg-primary px-7 py-3.5 text-sm font-bold tracking-[0.15em] text-primary-foreground sm:w-auto"
             >
               GENERATE MY FRAME
               <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
@@ -221,23 +221,28 @@ function Index() {
       {/* BUILDER */}
       <main id="builder" className="relative">
         <div className="grid-fine pointer-events-none absolute inset-0 opacity-40" />
-        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-14">
-          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1fr_440px]">
-            <div className="order-2 space-y-6 lg:order-1">
+        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
+          <div className="grid gap-10 sm:gap-14 lg:grid-cols-[1fr_440px]">
+            <div className="order-2 space-y-8 sm:space-y-10 lg:order-1">
               <Panel step="01" title="SELFIE">
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
                 <div className="grid gap-3 sm:flex sm:flex-wrap">
                   <Button
+                    disabled={loading}
                     onClick={() => fileRef.current?.click()}
-                    className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
+                    className="hover-glow w-full gap-2 rounded-none tracking-[0.1em] sm:w-auto"
                   >
-                    <Upload className="size-4" /> {img ? "REPLACE PHOTO" : "UPLOAD SELFIE"}
+                    <Upload className={`size-4 ${loading ? "animate-pulse" : ""}`} />{" "}
+                    {loading ? "READING…" : img ? "REPLACE PHOTO" : "UPLOAD SELFIE"}
                   </Button>
                   {img && (
                     <Button
                       variant="outline"
-                      className="w-full gap-2 rounded-sm tracking-[0.1em] sm:w-auto"
-                      onClick={() => setImg(null)}
+                      className="hover-glow w-full gap-2 rounded-none tracking-[0.1em] sm:w-auto"
+                      onClick={() => {
+                        setImg(null);
+                        setRevealKey((k) => k + 1);
+                      }}
                     >
                       <RefreshCw className="size-4" /> CLEAR
                     </Button>
@@ -277,10 +282,10 @@ function Index() {
                         key={f.id}
                         type="button"
                         onClick={() => setFrame(f.id)}
-                        className={`group relative overflow-hidden rounded-sm border p-4 text-left transition-all duration-200 ${
+                        className={`group relative overflow-hidden rounded-none border p-5 text-left transition-all duration-300 ${
                           active
-                            ? "border-primary bg-primary/10 shadow-[0_0_0_1px_var(--primary)]"
-                            : "border-border hover:-translate-y-0.5 hover:border-primary/60"
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover-lift hover:bg-card"
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -309,35 +314,44 @@ function Index() {
             </div>
 
             <aside className="order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start">
-              <div className="bracketed border border-primary/30 bg-card/60 p-4 backdrop-blur-sm sm:p-5">
+              <div className="bracketed border border-primary/25 bg-card/60 p-5 backdrop-blur-sm sm:p-7">
                 <div className="mb-3 flex items-center justify-between gap-2 text-[10px] tracking-[0.25em]">
                   <span className="truncate text-primary">LIVE PREVIEW</span>
                   <span className="shrink-0 text-muted-foreground">1080 × 1080</span>
                 </div>
-                <div className="scanlines relative mx-auto w-full max-w-[420px] lg:max-w-none">
+                <div className="scanlines relative mx-auto w-full max-w-[420px] overflow-hidden lg:max-w-none">
                   <canvas
+                    key={revealKey}
                     ref={canvasRef}
                     width={SIZE}
                     height={SIZE}
-                    className="aspect-square w-full border border-border"
+                    className="animate-reveal aspect-square w-full border border-border"
                   />
+                  {loading && (
+                    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-background/40 backdrop-blur-[1px]">
+                      <div className="animate-scan-pass h-1/6 w-full bg-gradient-to-b from-transparent via-primary/35 to-transparent" />
+                      <span className="absolute bottom-3 left-3 text-[10px] tracking-[0.3em] text-primary">
+                        PROCESSING SUBJECT…
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="mt-4 grid gap-2">
-                  <Button onClick={download} className="h-11 gap-2 rounded-sm tracking-[0.12em]">
+                  <Button onClick={download} className="hover-glow h-12 gap-2 rounded-none tracking-[0.12em]">
                     <Download className="size-4" /> DOWNLOAD PNG
                   </Button>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant="outline"
                       onClick={shareX}
-                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                      className="hover-glow h-11 gap-2 rounded-none tracking-[0.1em]"
                     >
                       <Share2 className="size-4" /> SHARE ON X
                     </Button>
                     <Button
                       variant="outline"
                       onClick={copyText}
-                      className="h-11 gap-2 rounded-sm tracking-[0.1em]"
+                      className="hover-glow h-11 gap-2 rounded-none tracking-[0.1em]"
                     >
                       <Copy className="size-4" /> COPY TEXT
                     </Button>
@@ -356,7 +370,7 @@ function Index() {
 
       <footer className="relative border-t border-primary/20">
         <div className="topo absolute inset-0 -z-10 opacity-30" />
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-[10px] sm:px-5 tracking-[0.25em] text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-12 sm:px-8 text-[10px] sm:px-5 tracking-[0.25em] text-muted-foreground">
           <span>FRAME//GOA · HH GOA 2026</span>
           <span className="text-primary/70">RENDERS ENTIRELY ON-DEVICE</span>
         </div>
@@ -375,8 +389,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="bracketed border border-border bg-card/60 p-5 backdrop-blur-sm">
-      <div className="mb-4 flex items-baseline gap-3 border-b border-border/70 pb-3">
+    <section className="bracketed hover-lift border border-border bg-card/60 p-6 backdrop-blur-sm sm:p-8">
+      <div className="mb-6 flex items-baseline gap-3 border-b border-border/70 pb-4">
         <span className="font-sans text-2xl font-bold leading-none text-primary/40">{step}</span>
         <h2 className="text-xs tracking-[0.3em] text-foreground">{title}</h2>
       </div>
@@ -404,7 +418,7 @@ function Field({
         onChange={onChange}
         placeholder={placeholder}
         maxLength={40}
-        className="rounded-sm border-border bg-background/60"
+        className="rounded-none border-border bg-background/60"
       />
     </div>
   );
