@@ -719,7 +719,10 @@ export function drawFrame(
   ctx.fillText("FRAME//GOA \u2014 IDENTITY PASS", SIZE - M, by + 112);
   ctx.restore();
 
+  inkStamp(ctx, 905, 878, 74, p.accent, "HH GOA", "ISSUED \u00B7 2026");
+
   ticks(ctx, p);
+
   corners(ctx, p);
 
   if (p.scan) {
