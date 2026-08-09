@@ -112,22 +112,22 @@ function Index() {
       <Toaster position="top-center" />
 
       <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
-          <div className="flex items-baseline gap-3">
-            <span className="font-sans text-lg font-bold tracking-[-0.03em]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between sm:px-5">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <span className="truncate font-sans text-base font-bold tracking-[-0.03em] sm:text-lg">
               FRAME<span className="text-primary">//</span>GOA
             </span>
             <span className="hidden text-[10px] tracking-[0.28em] text-muted-foreground sm:inline">
               IDENTITY UNIT
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <span className="hidden items-center gap-2 text-[10px] tracking-[0.28em] text-primary sm:flex">
               <span className="size-1.5 animate-pulse rounded-full bg-primary" /> ONLINE
             </span>
             <a
               href="#builder"
-              className="rounded-sm border border-primary/50 px-3 py-1.5 text-[11px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+              className="whitespace-nowrap rounded-sm border border-primary/50 px-3 py-1.5 text-[10px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-[11px]"
             >
               BUILD BADGE
             </a>
