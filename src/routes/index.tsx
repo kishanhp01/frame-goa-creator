@@ -155,24 +155,32 @@ function Index() {
       <Toaster position="top-center" />
 
       <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between sm:px-5">
-          <div className="flex min-w-0 items-baseline gap-3">
-            <span className="truncate font-sans text-base font-bold tracking-[-0.03em] sm:text-lg">
-              FRAME<span className="text-primary">//</span>GOA
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-9 shrink-0 place-items-center border border-primary/50 bg-primary/10 font-sans text-[11px] font-bold text-primary">
+              HH
             </span>
-            <span className="hidden text-[10px] tracking-[0.28em] text-muted-foreground sm:inline">
-              IDENTITY UNIT
-            </span>
+            <div className="min-w-0">
+              <p className="truncate font-sans text-sm font-bold tracking-[-0.02em] sm:text-base">
+                Frame In Goa
+              </p>
+              <p className="truncate text-[9px] tracking-[0.24em] text-muted-foreground">
+                2026 EDITION · IDENTITY STUDIO
+              </p>
+            </div>
           </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <span className="hidden items-center gap-2 text-[10px] tracking-[0.28em] text-primary sm:flex">
-              <span className="size-1.5 animate-pulse rounded-full bg-primary" /> ONLINE
-            </span>
+          <div className="flex shrink-0 items-center gap-2">
+            <a
+              href="#formats"
+              className="hidden rounded-full border border-border px-4 py-1.5 text-[11px] tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
+            >
+              Formats
+            </a>
             <a
               href="#builder"
-              className="hover-glow whitespace-nowrap rounded-none border border-primary/50 px-3 py-1.5 text-[10px] tracking-[0.2em] text-primary transition-colors hover:bg-primary hover:text-primary-foreground sm:text-[11px]"
+              className="hover-glow whitespace-nowrap rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.1em] text-primary-foreground"
             >
-              BUILD BADGE
+              Generator
             </a>
           </div>
         </div>
@@ -180,88 +188,133 @@ function Index() {
 
       {/* HERO */}
       <section className="scanlines relative isolate overflow-hidden border-b border-primary/20">
-        <div className="topo absolute inset-0 -z-20 opacity-60" />
+        <div className="ornament animate-spin-slow absolute left-1/2 top-1/2 -z-20 aspect-square w-[135vw] max-w-[1400px] -translate-x-1/2 -translate-y-1/2 opacity-70" />
         <div className="grid-lines absolute inset-0 -z-10" />
-        <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-primary/10 blur-3xl" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/70" />
+        <div className="dotted-rails pointer-events-none absolute inset-y-0 left-4 right-4 -z-10 opacity-40 sm:left-8 sm:right-8" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/50" />
 
-        <div className="mx-auto max-w-7xl px-5 pb-20 pt-16 sm:px-8 sm:pb-32 sm:pt-28">
-          <div className="animate-rise flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] tracking-[0.3em] text-muted-foreground">
-            <span className="border border-primary/40 px-2 py-1 text-primary">HACKER HOUSE</span>
-            <span>GOA · 2026</span>
-            <span className="hidden sm:inline">15.2993° N / 74.1240° E</span>
-          </div>
+        <div className="mx-auto max-w-5xl px-5 pb-20 pt-16 text-center sm:px-8 sm:pb-28 sm:pt-24">
+          <span className="animate-rise inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-4 py-1.5 text-[10px] tracking-[0.3em] text-primary">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
+            OPEN NOW · OCT 2026 · #FRAMEINGOA
+          </span>
 
-          <h1 className="animate-rise mt-7 font-sans text-[clamp(3rem,13vw,10rem)] font-bold uppercase leading-[0.82] tracking-[-0.05em]">
-            <span className="block">Frame</span>
-            <span className="block text-outline animate-flicker">//Goa</span>
+          <h1 className="animate-rise mt-8 font-sans text-[clamp(2.8rem,12vw,8rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em]">
+            <span className="block">Get your</span>
+            <span className="block">
+              <span className="text-primary">Goa</span>{" "}
+              <span className="align-super text-accent text-[0.42em] tracking-normal">गोवा</span>
+            </span>
+            <span className="block animate-flicker">Frame</span>
           </h1>
 
-          <p className="animate-rise mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            <span className="text-primary font-semibold tracking-wide">HHGOA // FRAME IN GOA</span>
-            <br className="hidden sm:block" />
-            Generate your 2026 builder identity. Upload a photo, fill your details, pick a frame,
-            then download and share to X with{" "}
-            <span className="text-primary">#FrameInGoa</span>.
+          <p className="animate-rise mx-auto mt-7 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Drop your photo. Personalise your pass. Post with{" "}
+            <span className="font-bold text-primary">#FrameInGoa</span> and claim your spot at
+            Hacker House Goa 2026.
           </p>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
-            <ul className="animate-rise grid gap-2.5">
-              {PERKS.map((p) => (
-                <li key={p} className="flex gap-3 text-sm leading-snug text-muted-foreground">
-                  <span className="text-primary">✦</span>
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="animate-rise grid grid-cols-3 gap-px border border-primary/25 bg-primary/20">
-              {[
-                ["04", "FRAMES"],
-                ["1080", "PX SQUARE"],
-                ["00", "LOGINS"],
-              ].map(([n, l]) => (
-                <div key={l} className="min-w-0 bg-background/80 px-2 py-3 sm:px-3 sm:py-4">
-                  <p className="font-sans text-xl font-bold tracking-tight text-primary sm:text-3xl">{n}</p>
-                  <p className="mt-1 text-[9px] tracking-[0.15em] text-muted-foreground sm:text-[10px] sm:tracking-[0.2em]">
-                    {l}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div id="formats" className="mt-12 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-4">
+            {FORMATS.map((f) => (
+              <div
+                key={f.name}
+                className="hover-lift rounded-md border border-primary/20 bg-card/60 p-5 backdrop-blur-sm"
+              >
+                <p className="font-sans text-sm font-bold">{f.name}</p>
+                <p className="mt-1 text-[11px] tracking-[0.12em] text-primary">{f.size}</p>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
+              </div>
+            ))}
           </div>
 
-          <div className="animate-rise mt-8 inline-flex flex-wrap items-center gap-2 border border-primary/40 bg-primary/5 px-4 py-3 text-[11px] tracking-[0.2em] text-primary">
-            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
-            <span>CLOSES IN {countdown ?? "—"}</span>
-            <span className="text-muted-foreground">· AUG 13, 11:59 PM IST</span>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
               href="#builder"
-              className="hover-glow group inline-flex w-full items-center justify-center gap-2 bg-primary px-7 py-3.5 text-sm font-bold tracking-[0.15em] text-primary-foreground sm:w-auto"
+              className="hover-glow group inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-bold tracking-[0.08em] text-primary-foreground sm:w-auto"
             >
-              GENERATE MY FRAME
+              Create Your Frame ✦
               <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
             </a>
-            <span className="text-[11px] tracking-[0.2em] text-muted-foreground">
-              ~20 SECONDS · NO SIGNUP
-            </span>
+            <a
+              href="https://hhgoa.com/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover-glow inline-flex w-full items-center justify-center rounded-full border border-border px-8 py-4 text-sm tracking-[0.08em] text-foreground sm:w-auto"
+            >
+              Learn about HH Goa →
+            </a>
           </div>
 
-
+          <p className="mt-6 text-[11px] tracking-[0.2em] text-muted-foreground">
+            CLOSES IN {countdown ?? "—"} · NO LOGIN
+          </p>
         </div>
 
         <div className="flex overflow-hidden border-t border-primary/20 bg-primary/5 py-2">
           <div className="animate-marquee flex shrink-0 gap-8 whitespace-nowrap pr-8">
             {[...TICKER, ...TICKER].map((t, i) => (
               <span key={i} className="text-[10px] tracking-[0.35em] text-primary/70">
-                {t} <span className="text-primary/30">//</span>
+                {t} <span className="text-accent/50">//</span>
               </span>
             ))}
           </div>
         </div>
       </section>
+
+      {/* STORY */}
+      <section className="relative overflow-hidden border-b border-primary/20">
+        <div className="topo absolute inset-0 -z-10 opacity-50" />
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <div className="animate-float bracketed relative aspect-[4/3] overflow-hidden rounded-md border border-primary/25 bg-card/50">
+            <div className="ornament absolute inset-0 opacity-90" />
+            <div className="absolute inset-0 grid place-items-center px-8 text-center">
+              <p className="font-sans text-[clamp(1.8rem,6vw,3.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em] text-primary/80">
+                Hacker
+                <br />
+                House
+                <br />
+                <span className="text-accent/80">Goa</span>
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] tracking-[0.32em] text-primary">OFFICIAL EVENT FRAME</p>
+            <h2 className="mt-4 font-sans text-[clamp(2rem,5vw,3.4rem)] font-bold uppercase leading-[0.95] tracking-[-0.04em]">
+              Your ticket to Goa
+            </h2>
+            <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
+              247 builders. 4 days. One beach house on the Arabian Sea. Less noise, more ships.
+              Generate your personalised HH Goa identity card and share it on X with{" "}
+              <span className="text-primary">#FrameInGoa</span> to land on the Radar.
+            </p>
+
+            <ul className="mt-8 grid gap-2.5">
+              {PERKS.map((p) => (
+                <li key={p} className="flex gap-3 text-sm leading-snug text-muted-foreground">
+                  <span className="text-accent">✦</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 grid grid-cols-2 gap-px border border-primary/25 bg-primary/20 sm:grid-cols-4">
+              {[
+                ["247", "BUILDERS"],
+                ["4", "DAYS"],
+                ["20K+", "APPLICANTS"],
+                ["1", "PARADISE"],
+              ].map(([n, l]) => (
+                <div key={l} className="min-w-0 bg-background/85 px-3 py-4">
+                  <p className="font-sans text-2xl font-bold tracking-tight text-primary">{n}</p>
+                  <p className="mt-1 text-[9px] tracking-[0.18em] text-muted-foreground">{l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* BUILDER */}
       <main id="builder" className="relative">
