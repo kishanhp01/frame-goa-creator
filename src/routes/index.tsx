@@ -8,9 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FRAMES, SIZE, drawFrame, type FrameId, type Identity } from "@/lib/frames";
 
-const TITLE = "FRAME//GOA — HH Goa 2026 Identity Frame Generator";
+const TITLE = "FRAME//GOA — HH Goa 2026 Frame / ID Card Generator";
 const DESC =
-  "Generate your HH Goa 2026 identity frame: upload a selfie, pick one of four hacker-meets-Goa designs, and download or share your badge. No login required.";
+  "Design your own HH Goa 2026 themed photo frame. Bring teammates into one combined frame, download in 1 click and share to X with #FrameInGoa. No login, no manual cropping.";
+
+const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
+
+const PERKS = [
+  "Instantly recognizable HH Goa 2026 identity",
+  "1-click download + 1-click Share to X",
+  "Works on any photo — no manual cropping",
+  "Personalized: name, stack, a generated builder class",
+  "Seconds from upload to shareable output",
+  "Get to the top of the ladder and win the exclusive HH Goa ID",
+  "Use #FrameInGoa to get featured in the Radar",
+];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,13 +43,28 @@ const EMPTY: Identity = { name: "", handle: "", college: "", city: "", role: "" 
 
 const TICKER = [
   "HH GOA 2026",
-  "15°N 74°E",
+  "#FRAMEINGOA",
   "NO LOGIN",
-  "RENDERS ON-DEVICE",
+  "NO MANUAL CROPPING",
   "4 FRAMES",
   "1080×1080 PNG",
-  "SHIP FROM THE SHORE",
+  "1-CLICK SHARE TO X",
 ];
+
+function useCountdown(target: number) {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  if (now === null) return null;
+  const ms = Math.max(0, target - now);
+  const s = Math.floor(ms / 1000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${Math.floor(s / 86400)}D ${pad(Math.floor(s / 3600) % 24)}H ${pad(Math.floor(s / 60) % 60)}M ${pad(s % 60)}S`;
+}
+
 
 function Index() {
   const [identity, setIdentity] = useState<Identity>(EMPTY);
@@ -44,6 +72,7 @@ function Index() {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [revealKey, setRevealKey] = useState(0);
+  const countdown = useCountdown(DEADLINE);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -106,7 +135,7 @@ function Index() {
     toast.success("PNG downloaded — go post it.");
   };
 
-  const shareText = `I'm heading to HH Goa 2026 ${identity.handle ? `— ${identity.handle} ` : ""}as ${identity.role || "a builder"}${identity.city ? ` from ${identity.city}` : ""}. Made my identity frame with FRAME//GOA. #HHGoa2026 #FRAMEGOA`;
+  const shareText = `I'm heading to HH Goa 2026 ${identity.handle ? `— ${identity.handle} ` : ""}as ${identity.role || "a builder"}${identity.city ? ` from ${identity.city}` : ""}. Made my frame with FRAME//GOA — make yours in seconds, no login. #FrameInGoa #HHGoa2026`;
 
   const shareX = () => {
     const url = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}`;
@@ -170,12 +199,22 @@ function Index() {
             <span className="block text-outline animate-flicker">//Goa</span>
           </h1>
 
+          <p className="animate-rise mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Design your own HH Goa 2026 themed photo frame generator. Use that same generator to
+            bring your teammates into one combined frame. Post it on X with a quick how-to on
+            generating your own <span className="text-primary">#FrameInGoa</span> post using your
+            generator — and you're done.
+          </p>
+
           <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
-            <p className="animate-rise max-w-lg text-sm leading-relaxed text-muted-foreground">
-              The identity unit for Hacker House Goa 2026. Load a selfie, stamp your handle, pick a
-              frame cut from salt air and terminal green. Everything renders on your device — no
-              account, no upload, no server watching.
-            </p>
+            <ul className="animate-rise grid gap-2.5">
+              {PERKS.map((p) => (
+                <li key={p} className="flex gap-3 text-sm leading-snug text-muted-foreground">
+                  <span className="text-primary">✦</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
             <div className="animate-rise grid grid-cols-3 gap-px border border-primary/25 bg-primary/20">
               {[
                 ["04", "FRAMES"],
@@ -192,6 +231,12 @@ function Index() {
             </div>
           </div>
 
+          <div className="animate-rise mt-8 inline-flex flex-wrap items-center gap-2 border border-primary/40 bg-primary/5 px-4 py-3 text-[11px] tracking-[0.2em] text-primary">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
+            <span>CLOSES IN {countdown ?? "—"}</span>
+            <span className="text-muted-foreground">· AUG 13, 11:59 PM IST</span>
+          </div>
+
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#builder"
@@ -204,6 +249,7 @@ function Index() {
               ~20 SECONDS · NO SIGNUP
             </span>
           </div>
+
 
         </div>
 
