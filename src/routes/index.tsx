@@ -8,9 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FRAMES, SIZE, drawFrame, type FrameId, type Identity } from "@/lib/frames";
 
-const TITLE = "FRAME//GOA — HH Goa 2026 Identity Frame Generator";
+const TITLE = "FRAME//GOA — HH Goa 2026 Frame / ID Card Generator";
 const DESC =
-  "Generate your HH Goa 2026 identity frame: upload a selfie, pick one of four hacker-meets-Goa designs, and download or share your badge. No login required.";
+  "Design your own HH Goa 2026 themed photo frame. Bring teammates into one combined frame, download in 1 click and share to X with #FrameInGoa. No login, no manual cropping.";
+
+const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
+
+const PERKS = [
+  "Instantly recognizable HH Goa 2026 identity",
+  "1-click download + 1-click Share to X",
+  "Works on any photo — no manual cropping",
+  "Personalized: name, stack, a generated builder class",
+  "Seconds from upload to shareable output",
+  "Get to the top of the ladder and win the exclusive HH Goa ID",
+  "Use #FrameInGoa to get featured in the Radar",
+];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
