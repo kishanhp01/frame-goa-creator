@@ -43,13 +43,28 @@ const EMPTY: Identity = { name: "", handle: "", college: "", city: "", role: "" 
 
 const TICKER = [
   "HH GOA 2026",
-  "15°N 74°E",
+  "#FRAMEINGOA",
   "NO LOGIN",
-  "RENDERS ON-DEVICE",
+  "NO MANUAL CROPPING",
   "4 FRAMES",
   "1080×1080 PNG",
-  "SHIP FROM THE SHORE",
+  "1-CLICK SHARE TO X",
 ];
+
+function useCountdown(target: number) {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  if (now === null) return null;
+  const ms = Math.max(0, target - now);
+  const s = Math.floor(ms / 1000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${Math.floor(s / 86400)}D ${pad(Math.floor(s / 3600) % 24)}H ${pad(Math.floor(s / 60) % 60)}M ${pad(s % 60)}S`;
+}
+
 
 function Index() {
   const [identity, setIdentity] = useState<Identity>(EMPTY);
