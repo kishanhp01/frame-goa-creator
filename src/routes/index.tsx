@@ -15,13 +15,11 @@ const DESC =
 const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
 
 const PERKS = [
-  "Instantly recognizable HH Goa 2026 identity",
-  "1-click download + 1-click Share to X",
-  "Works on any photo — no manual cropping",
-  "Personalized: name, stack, a generated builder class",
-  "Seconds from upload to shareable output",
-  "Get to the top of the ladder and win the exclusive HH Goa ID",
-  "Use #FrameInGoa to get featured in the Radar",
+  "HHGOA identity, generated in seconds",
+  "Upload once. Frame auto-fits. No cropping.",
+  "Name + stack + builder class stamped on every card",
+  "1-click PNG download + 1-click Share to X",
+  "#FrameInGoa puts you on the Radar",
 ];
 
 
