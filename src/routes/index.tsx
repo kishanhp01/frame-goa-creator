@@ -49,6 +49,13 @@ const TICKER = [
   "1-CLICK SHARE TO X",
 ];
 
+const FORMATS: { name: string; size: string; desc: string }[] = [
+  { name: "Boarding Pass", size: "1080×566", desc: "Vintage flight stub with seat code & barcode" },
+  { name: "Builder ID", size: "1080×1350", desc: "Lanyard badge with hologram seal & QR" },
+  { name: "Profile Frame", size: "1080×1080", desc: "Square PFP with Goan arch ornament" },
+  { name: "Team Frame", size: "1200×630", desc: "Squad card for up to 4 builders" },
+];
+
 function useCountdown(target: number) {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
