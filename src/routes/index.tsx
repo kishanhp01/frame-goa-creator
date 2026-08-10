@@ -198,12 +198,22 @@ function Index() {
             <span className="block text-outline animate-flicker">//Goa</span>
           </h1>
 
+          <p className="animate-rise mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Design your own HH Goa 2026 themed photo frame generator. Use that same generator to
+            bring your teammates into one combined frame. Post it on X with a quick how-to on
+            generating your own <span className="text-primary">#FrameInGoa</span> post using your
+            generator — and you're done.
+          </p>
+
           <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
-            <p className="animate-rise max-w-lg text-sm leading-relaxed text-muted-foreground">
-              The identity unit for Hacker House Goa 2026. Load a selfie, stamp your handle, pick a
-              frame cut from salt air and terminal green. Everything renders on your device — no
-              account, no upload, no server watching.
-            </p>
+            <ul className="animate-rise grid gap-2.5">
+              {PERKS.map((p) => (
+                <li key={p} className="flex gap-3 text-sm leading-snug text-muted-foreground">
+                  <span className="text-primary">✦</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
             <div className="animate-rise grid grid-cols-3 gap-px border border-primary/25 bg-primary/20">
               {[
                 ["04", "FRAMES"],
@@ -220,6 +230,12 @@ function Index() {
             </div>
           </div>
 
+          <div className="animate-rise mt-8 inline-flex flex-wrap items-center gap-2 border border-primary/40 bg-primary/5 px-4 py-3 text-[11px] tracking-[0.2em] text-primary">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
+            <span>CLOSES IN {countdown ?? "—"}</span>
+            <span className="text-muted-foreground">· AUG 13, 11:59 PM IST</span>
+          </div>
+
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#builder"
@@ -232,6 +248,7 @@ function Index() {
               ~20 SECONDS · NO SIGNUP
             </span>
           </div>
+
 
         </div>
 
