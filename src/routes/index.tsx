@@ -198,10 +198,11 @@ function Index() {
           </h1>
 
           <p className="animate-rise mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Design your own HH Goa 2026 themed photo frame generator. Use that same generator to
-            bring your teammates into one combined frame. Post it on X with a quick how-to on
-            generating your own <span className="text-primary">#FrameInGoa</span> post using your
-            generator — and you're done.
+            <span className="text-primary font-semibold tracking-wide">HHGOA // FRAME IN GOA</span>
+            <br className="hidden sm:block" />
+            Generate your 2026 builder identity. Upload a photo, fill your details, pick a frame,
+            then download and share to X with{" "}
+            <span className="text-primary">#FrameInGoa</span>.
           </p>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
