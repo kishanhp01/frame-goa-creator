@@ -72,6 +72,7 @@ function Index() {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [revealKey, setRevealKey] = useState(0);
+  const countdown = useCountdown(DEADLINE);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
