@@ -156,24 +156,53 @@
     color: var(--color-foreground);
     font-family: var(--font-mono-ui);
     background-image:
-      radial-gradient(ellipse 60% 45% at 15% 0%, oklch(0.82 0.13 152 / 0.06), transparent 70%),
-      radial-gradient(ellipse 50% 40% at 90% 10%, oklch(0.7 0.12 45 / 0.05), transparent 70%);
+      radial-gradient(ellipse 70% 50% at 50% 0%, oklch(0.88 0.18 97 / 0.07), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 12%, oklch(0.66 0.24 356 / 0.05), transparent 70%);
     background-attachment: fixed;
   }
 }
 
 @utility grid-lines {
   background-image:
-    linear-gradient(oklch(0.82 0.13 152 / 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.82 0.13 152 / 0.03) 1px, transparent 1px);
+    linear-gradient(oklch(0.88 0.18 97 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.88 0.18 97 / 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
 @utility grid-fine {
   background-image:
-    linear-gradient(oklch(0.82 0.13 152 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.82 0.13 152 / 0.04) 1px, transparent 1px);
+    linear-gradient(oklch(0.88 0.18 97 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.88 0.18 97 / 0.04) 1px, transparent 1px);
   background-size: 14px 14px;
+}
+
+/* Goan ornamental field — layered mandala petals + dotted border rhythm. */
+@utility ornament {
+  background-image:
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      oklch(0.88 0.18 97 / 0.05) 0deg 6deg,
+      transparent 6deg 18deg
+    ),
+    radial-gradient(circle at 50% 50%, transparent 0 20%, oklch(0.88 0.18 97 / 0.04) 20% 21%, transparent 21%),
+    radial-gradient(circle at 50% 50%, transparent 0 34%, oklch(0.66 0.24 356 / 0.05) 34% 35%, transparent 35%),
+    radial-gradient(circle at 50% 50%, transparent 0 46%, oklch(0.88 0.18 97 / 0.035) 46% 47%, transparent 47%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size:
+    140% 140%,
+    120% 120%,
+    120% 120%,
+    120% 120%;
+}
+
+@utility dotted-rails {
+  background-image:
+    radial-gradient(circle, oklch(0.88 0.18 97 / 0.35) 1px, transparent 1px),
+    radial-gradient(circle, oklch(0.88 0.18 97 / 0.35) 1px, transparent 1px);
+  background-position: left center, right center;
+  background-repeat: repeat-y;
+  background-size: 3px 16px;
 }
 
 /* Topographic contour field, built from offset radial rings. */
@@ -182,19 +211,20 @@
     repeating-radial-gradient(
       ellipse 62% 46% at 22% 32%,
       transparent 0 26px,
-      oklch(0.82 0.13 152 / 0.06) 26px 27px
+      oklch(0.88 0.18 97 / 0.05) 26px 27px
     ),
     repeating-radial-gradient(
       ellipse 55% 70% at 82% 68%,
       transparent 0 32px,
-      oklch(0.78 0.1 195 / 0.05) 32px 33px
+      oklch(0.66 0.24 356 / 0.04) 32px 33px
     ),
     repeating-radial-gradient(
       ellipse 80% 40% at 55% 105%,
       transparent 0 40px,
-      oklch(0.7 0.12 45 / 0.04) 40px 41px
+      oklch(0.8 0.14 130 / 0.04) 40px 41px
     );
 }
+
 
 @utility scanlines {
   &::after {
