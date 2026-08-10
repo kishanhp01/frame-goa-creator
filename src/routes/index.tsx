@@ -15,13 +15,11 @@ const DESC =
 const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
 
 const PERKS = [
-  "Instantly recognizable HH Goa 2026 identity",
-  "1-click download + 1-click Share to X",
-  "Works on any photo — no manual cropping",
-  "Personalized: name, stack, a generated builder class",
-  "Seconds from upload to shareable output",
-  "Get to the top of the ladder and win the exclusive HH Goa ID",
-  "Use #FrameInGoa to get featured in the Radar",
+  "HHGOA identity, generated in seconds",
+  "Upload once. Frame auto-fits. No cropping.",
+  "Name + stack + builder class stamped on every card",
+  "1-click PNG download + 1-click Share to X",
+  "#FrameInGoa puts you on the Radar",
 ];
 
 
@@ -200,10 +198,11 @@ function Index() {
           </h1>
 
           <p className="animate-rise mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Design your own HH Goa 2026 themed photo frame generator. Use that same generator to
-            bring your teammates into one combined frame. Post it on X with a quick how-to on
-            generating your own <span className="text-primary">#FrameInGoa</span> post using your
-            generator — and you're done.
+            <span className="text-primary font-semibold tracking-wide">HHGOA // FRAME IN GOA</span>
+            <br className="hidden sm:block" />
+            Generate your 2026 builder identity. Upload a photo, fill your details, pick a frame,
+            then download and share to X with{" "}
+            <span className="text-primary">#FrameInGoa</span>.
           </p>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
