@@ -14,14 +14,10 @@ const DESC =
 
 const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
 
-const PERKS = [
-  "HHGOA identity, generated in seconds",
-  "Upload once. Frame auto-fits. No cropping.",
-  "Name + stack + builder class stamped on every card",
-  "1-click PNG download + 1-click Share to X",
-  "#FrameInGoa puts you on the Radar",
+const NAV = [
+  { label: "Gallery", href: "#builder" },
+  { label: "Leaderboard", href: "#steps" },
 ];
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,20 +36,20 @@ export const Route = createFileRoute("/")({
 const EMPTY: Identity = { name: "", handle: "", college: "", city: "", role: "" };
 
 const TICKER = [
-  "HH GOA 2026",
+  "HH GOA ’26",
   "#FRAMEINGOA",
+  "CODE. CHAOS. COMMUNITY.",
   "NO LOGIN",
-  "NO MANUAL CROPPING",
   "4 FRAMES",
   "1080×1080 PNG",
-  "1-CLICK SHARE TO X",
 ];
 
-const FORMATS: { name: string; size: string; desc: string }[] = [
-  { name: "Boarding Pass", size: "1080×566", desc: "Vintage flight stub with seat code & barcode" },
-  { name: "Builder ID", size: "1080×1350", desc: "Lanyard badge with hologram seal & QR" },
-  { name: "Profile Frame", size: "1080×1080", desc: "Square PFP with Goan arch ornament" },
-  { name: "Team Frame", size: "1200×630", desc: "Squad card for up to 4 builders" },
+const STEPS: { n: string; title: string; desc: string; Icon: LucideIcon }[] = [
+  { n: "01", title: "PERSONALIZE", desc: "Add your details & make it yours", Icon: PenLine },
+  { n: "02", title: "PICK YOUR STYLE", desc: "Choose your HHGOA frame", Icon: Palette },
+  { n: "03", title: "PREVIEW LIVE", desc: "See your identity come alive", Icon: Eye },
+  { n: "04", title: "DOWNLOAD", desc: "Save your frame instantly", Icon: Download },
+  { n: "05", title: "SHARE & FLEX", desc: "Post it. Tag it. Own it.", Icon: Share2 },
 ];
 
 function useCountdown(target: number) {
