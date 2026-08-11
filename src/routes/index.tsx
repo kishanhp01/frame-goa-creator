@@ -146,7 +146,7 @@ function Index() {
     toast.success("PNG downloaded — go post it.");
   };
 
-  const shareText = `I'm heading to HH Goa 2026 ${identity.handle ? `— ${identity.handle} ` : ""}as ${identity.role || "a builder"}${identity.city ? ` from ${identity.city}` : ""}. Made my frame with FRAME//GOA — make yours in seconds, no login. #FrameInGoa #HHGoa2026`;
+  const shareText = `I'm heading to HH Goa 2026 ${identity.handle ? `— ${identity.handle} ` : ""}as ${identity.role || "a builder"}${identity.city ? ` from ${identity.city}` : ""}. Made my frame with FRAME//GOA — make yours in seconds, no login: https://frame-goa-creator.vercel.app/ #FrameInGoa #HHGoa2026`;
 
   const shareX = () => {
     const url = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}`;
