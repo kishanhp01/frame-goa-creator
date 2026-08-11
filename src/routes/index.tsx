@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Upload, Share2, Copy, RefreshCw, ArrowDown } from "lucide-react";
+import {
+  Download,
+  Upload,
+  Share2,
+  Copy,
+  RefreshCw,
+  PenLine,
+  Palette,
+  Eye,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
