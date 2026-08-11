@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Upload, Share2, Copy, RefreshCw, ArrowDown } from "lucide-react";
+import {
+  Download,
+  Upload,
+  Share2,
+  Copy,
+  RefreshCw,
+  PenLine,
+  Palette,
+  Eye,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
@@ -14,14 +24,10 @@ const DESC =
 
 const DEADLINE = Date.parse("2026-08-13T23:59:00+05:30");
 
-const PERKS = [
-  "HHGOA identity, generated in seconds",
-  "Upload once. Frame auto-fits. No cropping.",
-  "Name + stack + builder class stamped on every card",
-  "1-click PNG download + 1-click Share to X",
-  "#FrameInGoa puts you on the Radar",
+const NAV = [
+  { label: "Gallery", href: "#builder" },
+  { label: "Leaderboard", href: "#steps" },
 ];
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,20 +46,20 @@ export const Route = createFileRoute("/")({
 const EMPTY: Identity = { name: "", handle: "", college: "", city: "", role: "" };
 
 const TICKER = [
-  "HH GOA 2026",
+  "HH GOA ’26",
   "#FRAMEINGOA",
+  "CODE. CHAOS. COMMUNITY.",
   "NO LOGIN",
-  "NO MANUAL CROPPING",
   "4 FRAMES",
   "1080×1080 PNG",
-  "1-CLICK SHARE TO X",
 ];
 
-const FORMATS: { name: string; size: string; desc: string }[] = [
-  { name: "Boarding Pass", size: "1080×566", desc: "Vintage flight stub with seat code & barcode" },
-  { name: "Builder ID", size: "1080×1350", desc: "Lanyard badge with hologram seal & QR" },
-  { name: "Profile Frame", size: "1080×1080", desc: "Square PFP with Goan arch ornament" },
-  { name: "Team Frame", size: "1200×630", desc: "Squad card for up to 4 builders" },
+const STEPS: { n: string; title: string; desc: string; Icon: LucideIcon }[] = [
+  { n: "01", title: "PERSONALIZE", desc: "Add your details & make it yours", Icon: PenLine },
+  { n: "02", title: "PICK YOUR STYLE", desc: "Choose your HHGOA frame", Icon: Palette },
+  { n: "03", title: "PREVIEW LIVE", desc: "See your identity come alive", Icon: Eye },
+  { n: "04", title: "DOWNLOAD", desc: "Save your frame instantly", Icon: Download },
+  { n: "05", title: "SHARE & FLEX", desc: "Post it. Tag it. Own it.", Icon: Share2 },
 ];
 
 function useCountdown(target: number) {
@@ -161,103 +167,101 @@ function Index() {
     <div className="min-h-screen overflow-x-hidden">
       <Toaster position="top-center" />
 
-      <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9 shrink-0 place-items-center border border-primary/50 bg-primary/10 font-sans text-[11px] font-bold text-primary">
-              HH
-            </span>
-            <div className="min-w-0">
-              <p className="truncate font-sans text-sm font-bold tracking-[-0.02em] sm:text-base">
-                Frame In Goa
-              </p>
-              <p className="truncate text-[9px] tracking-[0.24em] text-muted-foreground">
-                2026 EDITION · IDENTITY STUDIO
-              </p>
-            </div>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <a
-              href="#formats"
-              className="hidden rounded-full border border-border px-4 py-1.5 text-[11px] tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
-            >
-              Formats
-            </a>
-            <a
-              href="#builder"
-              className="hover-glow whitespace-nowrap rounded-full bg-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.1em] text-primary-foreground"
-            >
-              Generator
-            </a>
-          </div>
+      <header className="sticky top-0 z-40 border-b border-primary/15 bg-background/75 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-8">
+          <a href="#top" className="flex min-w-0 items-baseline gap-2">
+            <span className="font-brush text-2xl leading-none text-primary sm:text-3xl">HH GOA</span>
+            <span className="font-sans text-[11px] font-bold tracking-[0.2em] text-accent">’26</span>
+          </a>
+
+          <nav className="ml-auto hidden items-center gap-7 sm:flex">
+            {NAV.map((n) => (
+              <a
+                key={n.label}
+                href={n.href}
+                className="story-link text-[11px] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {n.label}
+              </a>
+            ))}
+          </nav>
+
+          <a
+            href="https://hhgoa.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="blob-btn ml-auto shrink-0 border border-accent/60 bg-accent/15 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-foreground sm:ml-6"
+          >
+            Join HHGOA ’26
+          </a>
         </div>
       </header>
 
       {/* HERO */}
-      <section className="scanlines relative isolate overflow-hidden border-b border-primary/20">
+      <section id="top" className="scanlines relative isolate overflow-hidden border-b border-primary/15">
         <div className="ornament animate-spin-slow absolute left-1/2 top-1/2 -z-20 aspect-square w-[135vw] max-w-[1400px] -translate-x-1/2 -translate-y-1/2 opacity-70" />
         <div className="grid-lines absolute inset-0 -z-10" />
         <div className="dotted-rails pointer-events-none absolute inset-y-0 left-4 right-4 -z-10 opacity-40 sm:left-8 sm:right-8" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px animate-sweep bg-primary/50" />
 
-        <div className="mx-auto max-w-5xl px-5 pb-20 pt-16 text-center sm:px-8 sm:pb-28 sm:pt-24">
-          <span className="animate-rise inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-4 py-1.5 text-[10px] tracking-[0.3em] text-primary">
-            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
-            OPEN NOW · OCT 2026 · #FRAMEINGOA
-          </span>
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-14 sm:px-8 sm:pb-24 sm:pt-20 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+          <div className="min-w-0">
+            <p className="animate-rise text-[10px] uppercase tracking-[0.34em] text-accent">
+              HH Goa ’26 <span className="text-primary/70">•</span> Homecoming of Hustlers
+            </p>
 
-          <h1 className="animate-rise mt-8 font-sans text-[clamp(2.8rem,12vw,8rem)] font-bold uppercase leading-[0.86] tracking-[-0.045em]">
-            <span className="block">Get your</span>
-            <span className="block">
-              <span className="text-primary">Goa</span>{" "}
-              <span className="align-super text-accent text-[0.42em] tracking-normal">गोवा</span>
-            </span>
-            <span className="block animate-flicker">Frame</span>
-          </h1>
+            <h1 className="animate-rise mt-5 font-brush text-[clamp(3.4rem,15vw,10rem)] uppercase leading-[0.82] tracking-[0.005em]">
+              <span className="block text-foreground">Frame the</span>
+              <span className="brush-stroke relative -ml-1 block text-primary sm:ml-6">
+                Goa energy
+              </span>
+            </h1>
 
-          <p className="animate-rise mx-auto mt-7 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Drop your photo. Personalise your pass. Post with{" "}
-            <span className="font-bold text-primary">#FrameInGoa</span> and claim your spot at
-            Hacker House Goa 2026.
-          </p>
+            <p className="animate-rise mt-7 font-sans text-[clamp(0.95rem,2.4vw,1.35rem)] font-bold uppercase tracking-[0.12em] text-foreground/90">
+              Your pass. Your vibe. <span className="text-accent">Your homeground.</span>
+            </p>
 
-          <div id="formats" className="mt-12 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-4">
-            {FORMATS.map((f) => (
-              <div
-                key={f.name}
-                className="hover-lift rounded-md border border-primary/20 bg-card/60 p-5 backdrop-blur-sm"
+            <p className="animate-rise mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+              Build your HH Goa identity, personalize your frame, and let your vibe do the talking.
+            </p>
+
+            <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+              <a
+                href="#builder"
+                className="blob-btn inline-flex items-center justify-center gap-2 bg-primary px-8 py-4 font-sans text-sm font-bold uppercase tracking-[0.1em] text-primary-foreground"
               >
-                <p className="font-sans text-sm font-bold">{f.name}</p>
-                <p className="mt-1 text-[11px] tracking-[0.12em] text-primary">{f.size}</p>
-                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
-              </div>
-            ))}
+                Create my frame →
+              </a>
+              <a
+                href="https://hhgoa.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="blob-btn inline-flex items-center justify-center gap-2 border border-primary/35 px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-foreground"
+              >
+                What is HHGOA? →
+              </a>
+            </div>
           </div>
 
-          <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#builder"
-              className="hover-glow group inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-bold tracking-[0.08em] text-primary-foreground sm:w-auto"
-            >
-              Create Your Frame ✦
-              <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
-            </a>
-            <a
-              href="https://hhgoa.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="hover-glow inline-flex w-full items-center justify-center rounded-full border border-border px-8 py-4 text-sm tracking-[0.08em] text-foreground sm:w-auto"
-            >
-              Learn about HH Goa →
-            </a>
+          <div className="animate-rise relative lg:mb-3">
+            <div className="bracketed border border-primary/20 bg-card/40 p-5 backdrop-blur-sm">
+              <p className="text-[9px] uppercase tracking-[0.3em] text-primary/80">Gate closes in</p>
+              <p className="mt-2 font-sans text-lg font-bold tracking-tight text-foreground">
+                {countdown ?? "—"}
+              </p>
+              <p className="mt-4 border-t border-primary/15 pt-4 text-[10px] uppercase leading-relaxed tracking-[0.18em] text-muted-foreground">
+                Aug 13 · 11:59 PM IST
+                <br />
+                No login · Renders on-device
+              </p>
+            </div>
+            <span className="mt-4 inline-block rotate-[-2deg] font-brush text-2xl text-accent">
+              #FrameInGoa
+            </span>
           </div>
-
-          <p className="mt-6 text-[11px] tracking-[0.2em] text-muted-foreground">
-            CLOSES IN {countdown ?? "—"} · NO LOGIN
-          </p>
         </div>
 
-        <div className="flex overflow-hidden border-t border-primary/20 bg-primary/5 py-2">
+        <div className="flex overflow-hidden border-t border-primary/15 bg-primary/5 py-2">
           <div className="animate-marquee flex shrink-0 gap-8 whitespace-nowrap pr-8">
             {[...TICKER, ...TICKER].map((t, i) => (
               <span key={i} className="text-[10px] tracking-[0.35em] text-primary/70">
@@ -268,59 +272,56 @@ function Index() {
         </div>
       </section>
 
-      {/* STORY */}
-      <section className="relative overflow-hidden border-b border-primary/20">
+      {/* STEPS */}
+      <section id="steps" className="relative overflow-hidden border-b border-primary/15">
         <div className="topo absolute inset-0 -z-10 opacity-50" />
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1fr_1fr] lg:items-center">
-          <div className="animate-float bracketed relative aspect-[4/3] overflow-hidden rounded-md border border-primary/25 bg-card/50">
-            <div className="ornament absolute inset-0 opacity-90" />
-            <div className="absolute inset-0 grid place-items-center px-8 text-center">
-              <p className="font-sans text-[clamp(1.8rem,6vw,3.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.04em] text-primary/80">
-                Hacker
-                <br />
-                House
-                <br />
-                <span className="text-accent/80">Goa</span>
-              </p>
-            </div>
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-brush text-[clamp(2.2rem,7vw,4.5rem)] uppercase leading-[0.85] text-foreground">
+              Five moves.
+              <br />
+              <span className="text-primary">One identity.</span>
+            </h2>
+            <p className="max-w-xs text-[11px] uppercase leading-relaxed tracking-[0.18em] text-muted-foreground">
+              Everything happens in your browser. Nothing uploaded, nothing stored.
+            </p>
           </div>
 
-          <div>
-            <p className="text-[10px] tracking-[0.32em] text-primary">OFFICIAL EVENT FRAME</p>
-            <h2 className="mt-4 font-sans text-[clamp(2rem,5vw,3.4rem)] font-bold uppercase leading-[0.95] tracking-[-0.04em]">
-              Your ticket to Goa
-            </h2>
-            <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-              247 builders. 4 days. One beach house on the Arabian Sea. Less noise, more ships.
-              Generate your personalised HH Goa identity card and share it on X with{" "}
-              <span className="text-primary">#FrameInGoa</span> to land on the Radar.
-            </p>
-
-            <ul className="mt-8 grid gap-2.5">
-              {PERKS.map((p) => (
-                <li key={p} className="flex gap-3 text-sm leading-snug text-muted-foreground">
-                  <span className="text-accent">✦</span>
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-10 grid grid-cols-2 gap-px border border-primary/25 bg-primary/20 sm:grid-cols-4">
-              {[
-                ["247", "BUILDERS"],
-                ["4", "DAYS"],
-                ["20K+", "APPLICANTS"],
-                ["1", "PARADISE"],
-              ].map(([n, l]) => (
-                <div key={l} className="min-w-0 bg-background/85 px-3 py-4">
-                  <p className="font-sans text-2xl font-bold tracking-tight text-primary">{n}</p>
-                  <p className="mt-1 text-[9px] tracking-[0.18em] text-muted-foreground">{l}</p>
+          <ul className="mt-12 divide-y divide-primary/10 border-y border-primary/15">
+            {STEPS.map(({ n, title, desc, Icon }) => (
+              <li
+                key={n}
+                className="step-row group flex items-center gap-4 border-l-2 border-l-transparent px-2 py-6 sm:gap-8 sm:px-4"
+              >
+                <span className="font-sans text-xs font-bold tracking-[0.2em] text-primary/50 transition-colors group-hover:text-primary">
+                  {n}
+                </span>
+                <Icon className="size-4 shrink-0 text-accent transition-transform duration-300 group-hover:scale-110" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-sans text-base font-bold uppercase tracking-[0.06em] sm:text-xl">
+                    {title}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{desc}</p>
                 </div>
-              ))}
-            </div>
+                <span className="hidden font-brush text-xl text-primary/0 transition-colors duration-300 group-hover:text-primary sm:block">
+                  →
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-16 text-center">
+            <p className="font-brush text-[clamp(1.8rem,6vw,3.4rem)] uppercase leading-[0.9] text-primary">
+              Code. Chaos. Community.
+            </p>
+            <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.34em] text-accent">
+              This is HHGOA.
+            </p>
           </div>
         </div>
       </section>
+
+
 
 
       {/* BUILDER */}
