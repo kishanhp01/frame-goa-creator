@@ -450,3 +450,60 @@
     animation: none !important;
   }
 }
+
+/* --- campaign layer: brush display type + street-art shapes --- */
+@theme inline {
+  --font-brush: "Caveat Brush", "Space Grotesk", cursive;
+}
+
+@utility brush-stroke {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: 0.08em;
+    height: 0.14em;
+    background: color-mix(in oklab, var(--accent) 70%, transparent);
+    border-radius: 60% 40% 55% 45% / 100% 100% 60% 70%;
+    transform: rotate(-1.2deg);
+    opacity: 0.85;
+  }
+}
+
+@utility blob-btn {
+  border-radius: 24px 10px 26px 12px / 12px 26px 10px 24px;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 0.68, 0.24, 1),
+    border-radius 0.35s ease,
+    box-shadow 0.25s ease;
+  &:hover {
+    transform: translateY(-2px) rotate(-0.6deg);
+    border-radius: 12px 26px 10px 24px / 26px 10px 24px 12px;
+    box-shadow: 0 16px 40px -22px color-mix(in oklab, var(--primary) 80%, transparent);
+  }
+  &:active {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@utility step-row {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    padding-left 0.3s cubic-bezier(0.22, 0.68, 0.24, 1);
+  &:hover {
+    background-color: color-mix(in oklab, var(--primary) 7%, transparent);
+    border-color: color-mix(in oklab, var(--primary) 45%, transparent);
+    padding-left: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob-btn:hover,
+  .step-row:hover {
+    transform: none;
+    padding-left: initial;
+  }
+}
